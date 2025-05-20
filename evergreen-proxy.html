@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Redirecting to Evergreen Tracking...</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; margin-top: 60px; color: #0070A8; }
+  </style>
+</head>
+<body>
+  <p>正在導向長榮查詢頁面，請稍候...</p>
+  <form id="egForm" method="POST" action="https://ct.shipmentlink.com/servlet/TDB1_CargoTracking.do" target="_self">
+    <input type="hidden" name="SEL" id="sel">
+    <input type="hidden" name="NO" id="no">
+  </form>
+  <script>
+    function getQueryParam(name) {
+      const url = new URL(window.location.href);
+      return url.searchParams.get(name) || '';
+    }
+    // SEL 欄位
+    const type = getQueryParam('type');
+    let sel = 's_cntr';
+    if (type === 'bl') sel = 's_bl';
+    if (type === 'booking') sel = 's_bkg';
+    document.getElementById('sel').value = sel;
+    document.getElementById('no').value = getQueryParam('no');
+    // 自動提交
+    window.onload = function() {
+      document.getElementById('egForm').submit();
+    };
+  </script>
+</body>
+</html> 

@@ -32,4 +32,15 @@ yarn-error.log*
 .vercel
 
 # typescript
-*.tsbuildinfo 
+*.tsbuildinfo
+
+# new additions
+.env
+.env.*.local
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw? 

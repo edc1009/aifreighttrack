@@ -1,0 +1,1846 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Container/BL Redirect Tracker</title>
+    <style>
+        :root {
+            --primary-color: #0070f3;
+            --secondary-color: #f5f5f5;
+            --border-color: #eaeaea;
+            --text-color: #333;
+            --error-color: #e53e3e;
+            --info-color: #3182ce;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--secondary-color);
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+        
+        header {
+            text-align: center;
+            margin: 2rem 0;
+        }
+        
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .description {
+            font-size: 1rem;
+            color: #666;
+            max-width: 600px;
+            margin: 0 auto 1.5rem;
+        }
+        
+        .search-form {
+            max-width: 600px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .radio-group {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .radio-label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+        
+        .radio-label input {
+            margin-right: 0.5rem;
+        }
+        
+        .input-group {
+            margin-bottom: 1rem;
+        }
+        
+        input[type="text"] {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.25rem;
+            font-size: 1rem;
+        }
+        
+        .error-message {
+            color: var(--error-color);
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+            min-height: 1.5rem;
+        }
+        
+        button {
+            width: 100%;
+            padding: 0.75rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 0.25rem;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        button:hover {
+            background-color: #0051b3;
+        }
+        
+        .companies {
+            margin: 2rem 0;
+        }
+        
+        .companies-title {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+        }
+        
+        .companies-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+        
+        .company-card {
+            background-color: white;
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            text-align: center;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .company-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .company-logo {
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 0.5rem;
+        }
+        
+        .company-placeholder {
+            width: 60px;
+            height: 60px;
+            background-color: #e2e8f0;
+            border-radius: 0.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #4a5568;
+            margin: 0 auto;
+        }
+        
+        .company-name {
+            font-weight: bold;
+            margin-bottom: 0.25rem;
+        }
+        
+        .company-code {
+            font-size: 0.875rem;
+            color: #666;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 2rem;
+            border-top: 1px solid var(--border-color);
+            font-size: 0.875rem;
+            color: #666;
+        }
+        
+        @media (max-width: 768px) {
+            .companies-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+        }
+        
+        .info-message {
+            color: var(--info-color);
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+            margin-bottom: 0.5rem;
+            font-style: italic;
+        }
+        
+        .scac-code-example {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+            font-size: 0.75rem;
+        }
+        
+        .scac-tag {
+            background-color: #e2e8f0;
+            padding: 0.125rem 0.375rem;
+            border-radius: 0.25rem;
+            white-space: nowrap;
+        }
+        
+        /* Tab 樣式 */
+        .tabs {
+            display: flex;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .tab {
+            padding: 0.75rem 1.5rem;
+            font-weight: 500;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .tab.active {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--primary-color);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* 聊天界面樣式 */
+        .chat-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            background-color: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 600px;
+        }
+        
+        .chat-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem;
+            text-align: center;
+        }
+        
+        .chat-messages {
+            flex: 1;
+            padding: 1rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .message {
+            max-width: 80%;
+            padding: 0.75rem 1rem;
+            border-radius: 1rem;
+            position: relative;
+            line-height: 1.5;
+        }
+        
+        .user-message {
+            align-self: flex-end;
+            background-color: var(--primary-color);
+            color: white;
+            border-bottom-right-radius: 0.25rem;
+        }
+        
+        .ai-message {
+            align-self: flex-start;
+            background-color: #f1f1f1;
+            border-bottom-left-radius: 0.25rem;
+        }
+        
+        .ai-message pre {
+            background-color: #f8f8f8;
+            padding: 0.5rem;
+            border-radius: 0.25rem;
+            overflow-x: auto;
+            margin: 0.5rem 0;
+        }
+        
+        .chat-input-container {
+            padding: 1rem;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .chat-input {
+            flex: 1;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.25rem;
+            font-size: 1rem;
+            resize: none;
+        }
+        
+        .chat-send-btn {
+            width: auto;
+            padding: 0.75rem 1.5rem;
+        }
+        
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.5rem 1rem;
+            background-color: #f1f1f1;
+            border-radius: 1rem;
+            border-bottom-left-radius: 0.25rem;
+            align-self: flex-start;
+            font-style: italic;
+            color: #666;
+        }
+        
+        .dot {
+            width: 8px;
+            height: 8px;
+            background-color: #666;
+            border-radius: 50%;
+            animation: typing 1.5s infinite;
+        }
+        
+        .dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        
+        .dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        
+        @keyframes typing {
+            0% { opacity: 0.2; transform: translateY(0); }
+            50% { opacity: 1; transform: translateY(-5px); }
+            100% { opacity: 0.2; transform: translateY(0); }
+        }
+        
+        .limit-warning {
+            margin-top: 0.5rem;
+            color: #888;
+            font-size: 0.75rem;
+            text-align: center;
+        }
+
+        /* 頁面頂部布局 */
+        .top-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            margin-bottom: 1rem;
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+            cursor: pointer; /* 添加指針樣式 */
+        }
+        
+        .logo {
+            height: 80px; /* 增加logo大小 */
+            margin-right: 1rem;
+            transition: transform 0.2s; /* 添加過渡效果 */
+        }
+
+        .logo:hover {
+            transform: scale(1.05); /* 添加懸停效果 */
+        }
+        
+        /* 確保tabs在右側有空間 */
+        .tabs-container {
+            margin-right: 20px;
+        }
+        
+        /* Tracking分頁標題樣式 */
+        .tracking-title {
+            text-align: center;
+            font-size: 2rem;
+            margin: 1rem auto 1.5rem;
+            max-width: 600px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 頂部布局：左側logo，右側tabs -->
+        <div class="top-header">
+            <div class="logo-container" onclick="switchToTrackingTab()">
+                <img src="images/logo.png" alt="Company Logo" class="logo">
+            </div>
+            
+            <!-- Tab 導航欄 移至右上角 -->
+            <div class="tabs-container">
+                <div class="tabs">
+                    <div class="tab active" data-tab="tracking">Tracking</div>
+                    <div class="tab" data-tab="logistics-chat">Logistics Chat</div>
+                </div>
+            </div>
+        </div>
+        
+        <main>
+            <!-- Tracking Tab Content -->
+            <div class="tab-content active" id="tracking-content">
+                <h1 class="tracking-title">Container/BL Redirect Tracker</h1>
+                <p class="description">
+                    Track your shipments across multiple shipping lines. Enter your Container Number or Bill of Lading Number to be redirected to the right shipping company.
+                </p>
+                
+                <div class="search-form">
+                    <div class="radio-group">
+                        <label class="radio-label">
+                            <input type="radio" name="searchType" value="container" checked>
+                            Container Number
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="searchType" value="bl">
+                            BL Number
+                        </label>
+                    </div>
+                    
+                    <div class="input-group">
+                        <div class="select-group" style="margin-bottom: 1rem;">
+                            <label for="companySelect">Select Shipping Company:</label>
+                            <select id="companySelect" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 0.25rem; font-size: 1rem;">
+                                <option value="">-- Select a company --</option>
+                                <!-- Options will be populated by JavaScript -->
+                            </select>
+                        </div>
+                        <input 
+                            type="text" 
+                            id="searchInput" 
+                            placeholder="Enter container number (e.g., MAEU1234567 or 1234567)"
+                            autocomplete="off"
+                        >
+                        <div id="inputHelp" class="info-message">
+                            Please enter the complete tracking number.
+                        </div>
+                        <div class="scac-code-example" id="scacExamples" style="display: none;">
+                            <span class="scac-tag">MAEU - Maersk</span>
+                            <span class="scac-tag">COSU - COSCO</span>
+                            <span class="scac-tag">MSCU - MSC</span>
+                            <span class="scac-tag">OOLU - OOCL</span>
+                            <span class="scac-tag">YMLU - Yang Ming</span>
+                        </div>
+                        <div class="error-message" id="errorMessage"></div>
+                    </div>
+                    
+                    <button id="searchButton">Search</button>
+                </div>
+                
+                <div class="companies">
+                    <h2 class="companies-title">Supported Shipping Companies</h2>
+                    <div class="companies-grid" id="companiesGrid"></div>
+                </div>
+            </div>
+            
+            <!-- Logistics Chat Tab Content -->
+            <div class="tab-content" id="logistics-chat-content">
+                <div class="chat-container">
+                    <div class="chat-header">
+                        <h2>Logistics Assistant</h2>
+                    </div>
+                    <div class="chat-messages" id="chat-messages">
+                        <div class="message ai-message">
+                            Hello! I'm your logistics assistant. Ask me anything about shipping, containers, or logistics.
+                        </div>
+                    </div>
+                    <div class="chat-input-container">
+                        <textarea 
+                            class="chat-input" 
+                            id="chat-input" 
+                            placeholder="Type your question here..."
+                            rows="3"
+                        ></textarea>
+                        <button class="chat-send-btn" id="chat-send-btn">Send</button>
+                    </div>
+                    <div class="limit-warning" id="limit-warning"></div>
+                </div>
+            </div>
+        </main>
+        
+        <footer>
+            <p>&copy; <span id="currentYear"></span> Container/BL Redirect Tracker. All rights reserved.</p>
+        </footer>
+    </div>
+    
+    <script>
+        // 航運公司數據
+        const shippingCompanies = [
+            {
+                name: 'Maersk',
+                codes: ['MAEU'],
+                logo: 'maersk.png',
+                blUrl: 'https://www.maersk.com/tracking/#tracking/',
+                containerUrl: 'https://www.maersk.com/tracking/#tracking/',
+                needsAutoSubmit: false,
+                needsParamSelection: false,
+                blNumberFormat: 'numbersOnly', // 需要移除SCAC前綴
+                needsDirectParam: true // 使用直接參數方式
+            },
+            {
+                name: 'COSCO',
+                codes: ['COSU', 'CAAU', 'CBHU', 'CCLU', 'CXNU', 'CSLU', 'CSNU'],
+                logo: 'cosco.png',
+                blUrl: 'https://elines.coscoshipping.com/ebusiness/cargotracking',
+                containerUrl: 'https://elines.coscoshipping.com/ebusiness/cargotracking',
+                needsAutoSubmit: true,
+                needsParamSelection: true,
+                blNumberFormat: 'withSCAC' // 需要SCAC前綴
+            },
+            {
+                name: 'Wan Hai',
+                codes: ['WHLC'],
+                logo: 'wanhai.png',
+                blUrl: 'https://www.wanhai.com/views/CargoTracking/CargoTracking.xhtml',
+                containerUrl: 'https://www.wanhai.com/views/CargoTracking/CargoTracking.xhtml',
+                needsAutoSubmit: true,
+                needsParamSelection: true
+            },
+            {
+                name: 'SeaLead',
+                codes: ['SJHH'],
+                logo: 'sealead.png',
+                blUrl: 'https://www.sea-lead.com/track-shipment/',
+                containerUrl: 'https://www.sea-lead.com/track-shipment/',
+                needsAutoSubmit: false,
+                needsParamSelection: false,
+                blNumberFormat: 'numbersOnly', // 需要移除SCAC前綴
+                needsDirectParam: false,
+                needsFormSubmit: true // 新增：需要使用表單提交
+            },
+            {
+                name: 'HMM',
+                codes: ['HDMU'],
+                logo: 'hmm.png',
+                blUrl: 'https://www.hmm21.com/cms/business/e_service/cargo_tracking/index.jsp?',
+                containerUrl: 'https://www.hmm21.com/cms/business/e_service/cargo_tracking/index.jsp?',
+                needsDirectParam: true // 使用直接參數格式
+            },
+            {
+                name: 'MSC',
+                codes: ['MSCU', 'MEDU'],
+                logo: 'msc.png',
+                blUrl: 'https://www.msc.com/track-a-shipment?',
+                containerUrl: 'https://www.msc.com/track-a-shipment?',
+                needsDirectParam: true // 使用直接參數格式
+            },
+            {
+                name: 'ONE',
+                codes: ['ONEU', 'ONEY'],
+                logo: 'one.png',
+                blUrl: 'https://ecomm.one-line.com/one-ecom/manage-shipment/cargo-tracking?',
+                containerUrl: 'https://ecomm.one-line.com/one-ecom/manage-shipment/cargo-tracking?',
+                needsDirectParam: true, // 使用直接參數方式
+                blNumberFormat: 'numbersOnly' // 需要移除SCAC前綴
+            },
+            {
+                name: 'ZIM',
+                codes: ['ZIMU'],
+                logo: 'zim.png',
+                blUrl: 'https://www.zim.com/tools/track-a-shipment?',
+                containerUrl: 'https://www.zim.com/tools/track-a-shipment?',
+                needsDirectParam: true // 使用直接參數格式
+            },
+            {
+                name: 'Yang Ming',
+                codes: ['YMLU', 'YMJA'],
+                logo: 'yangming.png',
+                blUrl: 'https://www.yangming.com/e-service/track_trace/track_trace_cargo_tracking.aspx?',
+                containerUrl: 'https://www.yangming.com/e-service/track_trace/track_trace_cargo_tracking.aspx?',
+                needsDirectParam: true // 使用直接參數格式
+            },
+            {
+                name: 'OOCL',
+                codes: ['OOLU'],
+                logo: 'oocl.png',
+                blUrl: 'https://www.oocl.com/eng/ourservices/eservices/cargotracking/Pages/cargotracking.aspx?',
+                containerUrl: 'https://www.oocl.com/eng/ourservices/eservices/cargotracking/Pages/cargotracking.aspx?',
+                needsDirectParam: true // 使用直接參數格式
+            },
+            {
+                name: 'Hapag-Lloyd',
+                codes: ['HLCU'],
+                logo: 'hlcu.png',
+                blUrl: 'https://www.hapag-lloyd.com/en/online-business/track/track-by-booking-solution.html?',
+                containerUrl: 'https://www.hapag-lloyd.com/en/online-business/track/track-by-container-solution.html?',
+                needsDirectParam: true // 使用直接參數格式
+            },
+            {
+                name: 'CMA CGM',
+                codes: ['CMDU'],
+                logo: 'cmdu.png',
+                blUrl: 'https://www.cma-cgm.com/ebusiness/tracking?',
+                containerUrl: 'https://www.cma-cgm.com/ebusiness/tracking?',
+                needsDirectParam: true // 使用直接參數格式
+            },
+            {
+                name: 'Evergreen',
+                codes: ['EGLV', 'EISU', 'EGHU', 'EMCU', 'IMTU', 'LITU', 'EGSU', 'UGMU'],
+                logo: 'eglv.png',
+                blUrl: 'https://ct.shipmentlink.com/servlet/TDB1_CargoTracking.do',
+                containerUrl: 'https://ct.shipmentlink.com/servlet/TDB1_CargoTracking.do',
+                needsAutoSubmit: false,
+                needsParamSelection: false,
+                blNumberFormat: 'numbersOnly'
+            }
+        ];
+
+        // DOM 元素
+        const searchTypeInputs = document.querySelectorAll('input[name="searchType"]');
+        const searchInput = document.getElementById('searchInput');
+        const errorMessage = document.getElementById('errorMessage');
+        const searchButton = document.getElementById('searchButton');
+        const companiesGrid = document.getElementById('companiesGrid');
+        const currentYear = document.getElementById('currentYear');
+        const inputHelp = document.getElementById('inputHelp');
+        const scacExamples = document.getElementById('scacExamples');
+        const companySelect = document.getElementById('companySelect');
+
+        // 設置當前年份
+        currentYear.textContent = new Date().getFullYear();
+
+        // 生成航運公司卡片
+        function renderCompanyCards() {
+            companiesGrid.innerHTML = '';
+            
+            shippingCompanies.forEach(company => {
+                const card = document.createElement('div');
+                card.className = 'company-card';
+                
+                const logoContainer = document.createElement('div');
+                logoContainer.className = 'company-logo';
+                
+                // 嘗試加載LOGO圖片
+                if (company.logo) {
+                    const logoImg = document.createElement('img');
+                    logoImg.src = `images/${company.logo}`;
+                    logoImg.alt = `${company.name} Logo`;
+                    logoImg.style.maxHeight = '60px';
+                    logoImg.style.maxWidth = '100%';
+                    logoImg.style.margin = '0 auto';
+                    logoImg.style.display = 'block';
+                    
+                    // 圖片載入錯誤時顯示佔位符
+                    logoImg.onerror = function() {
+                        this.style.display = 'none';
+                        showPlaceholder();
+                    };
+                    
+                    logoContainer.appendChild(logoImg);
+                } else {
+                    showPlaceholder();
+                }
+                
+                // 顯示首字母佔位符的函數
+                function showPlaceholder() {
+                    // 使用首字母作為placeholder
+                    const initials = company.name
+                        .split(' ')
+                        .map(word => word.charAt(0))
+                        .join('')
+                        .toUpperCase();
+                    
+                    const placeholder = document.createElement('div');
+                    placeholder.className = 'company-placeholder';
+                    placeholder.textContent = initials;
+                    
+                    logoContainer.appendChild(placeholder);
+                }
+                
+                const name = document.createElement('div');
+                name.className = 'company-name';
+                name.textContent = company.name;
+                
+                const code = document.createElement('div');
+                code.className = 'company-code';
+                code.textContent = company.codes.join(', ');
+                
+                card.appendChild(logoContainer);
+                card.appendChild(name);
+                card.appendChild(code);
+                
+                companiesGrid.appendChild(card);
+            });
+        }
+
+        // 更新輸入框的placeholder和幫助信息
+        function updateInputHelpers() {
+            const searchType = document.querySelector('input[name="searchType"]:checked').value;
+            if (searchType === 'container') {
+                searchInput.placeholder = "Enter complete container number";
+                inputHelp.textContent = "Please enter the complete container number.";
+                // 集裝箱搜尋時顯示公司選擇下拉選單
+                companySelect.parentElement.style.display = "block";
+                // 集裝箱搜尋時隱藏SCAC範例
+                scacExamples.style.display = "none";
+            } else {
+                searchInput.placeholder = "Enter bill of lading number with prefix";
+                inputHelp.textContent = "Please include the prefix code (e.g., MAEU, COSU) when entering your bill of lading number.";
+                // BL搜尋時隱藏公司選擇下拉選單
+                companySelect.parentElement.style.display = "none";
+                // BL搜尋時顯示SCAC範例
+                scacExamples.style.display = "block";
+            }
+        }
+
+        // 驗證Container號碼格式
+        function isValidContainerNumber(value) {
+            // ISO 6346標準集裝箱號碼或常見變體
+            // 如果沒有匹配任何已知航運公司代碼，視為無效
+            if (!detectShippingCompany(value, 'container')) {
+                return false;
+            }
+            
+            // 標準格式檢查
+            return /^[A-Z]{3}U\d{7}$/.test(value) || 
+                   /^[A-Z]{4}\d{6,7}$/.test(value);
+        }
+
+        // 驗證BL號碼格式
+        function isValidBLNumber(value) {
+            // 基本驗證：非空且能找到對應的航運公司
+            const trimmedValue = value.trim();
+            if (trimmedValue.length === 0) {
+                return false;
+            }
+            
+            // 必須能檢測到航運公司
+            return detectShippingCompany(trimmedValue, 'bl') !== null;
+        }
+
+        // 根據號碼檢測航運公司
+        function detectShippingCompany(number, type) {
+            // 只針對BL號碼檢查前綴
+            if (type === 'bl') {
+                // 移除可能的 "BL=" 前綴
+                const cleanNumber = number.startsWith('BL=') ? number.substring(3) : number;
+                
+                for (const company of shippingCompanies) {
+                    if (company.codes.some(code => cleanNumber.startsWith(code))) {
+                        return company;
+                    }
+                }
+                
+                // 特殊處理：Evergreen BL號碼可能只有數字
+                if (/^\d+$/.test(cleanNumber)) {
+                    const evergreen = shippingCompanies.find(c => c.name === 'Evergreen');
+                    if (evergreen) {
+                        return evergreen;
+                    }
+                }
+            }
+            
+            return null;
+        }
+
+        // ONE的特殊處理，確保正確移除前綴
+        function handleOneRedirect(baseUrl, number, type) {
+            console.log('Handling ONE redirect:', { number, type });
+            
+            let processedNumber = number;
+            
+            // 針對BL號碼，移除前綴
+            if (type === 'bl') {
+                const onePrefixes = ['ONEU', 'ONEY'];
+                for (const prefix of onePrefixes) {
+                    if (processedNumber.toUpperCase().startsWith(prefix)) {
+                        processedNumber = processedNumber.substring(prefix.length);
+                        console.log('Removed ONE prefix, result:', processedNumber);
+                        break;
+                    }
+                }
+            }
+            
+            // 構建URL - 使用正確的參數名 trakNoParam
+            const url = `${baseUrl}trakNoParam=${processedNumber}`;
+            console.log('ONE URL:', url);
+            
+            // 打開URL
+            window.open(url, '_blank');
+            return null; // 表示已處理
+        }
+
+        // 處理 SeaLead 的重定向
+        function handleSeaLeadRedirect(baseUrl, number, type) {
+            console.log('Handling SeaLead redirect:', { number, type });
+            
+            if (type === 'container') {
+                const trackingUrl = `https://www.sea-lead.com/track-shipment/?container_id=${number}`;
+                window.open(trackingUrl, '_blank');
+                return null;
+            }
+            
+            let cleanNumber = number;
+            if (number.toUpperCase().startsWith('SJHH')) {
+                cleanNumber = number.substring(4);
+            }
+            
+            const popupDiv = document.createElement('div');
+            popupDiv.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.4); z-index:9999; display:flex; justify-content:center; align-items:center;';
+            function closePopup() {
+                if (popupDiv.parentNode) {
+                    document.body.removeChild(popupDiv);
+                }
+            }
+            const contentDiv = document.createElement('div');
+            contentDiv.style.cssText = 'background:white; padding:25px; border-radius:10px; max-width:500px; width:90%; position:relative;';
+            contentDiv.addEventListener('click', function(event) { event.stopPropagation(); });
+            const closeButton = document.createElement('button');
+            closeButton.innerHTML = '✕';
+            closeButton.style.cssText = 'position:absolute; top:10px; right:10px; border:none; background:none; font-size:24px; font-weight:bold; cursor:pointer; color:black; padding:0; width:30px; height:30px; line-height:26px; text-align:center;';
+            closeButton.addEventListener('click', function(event) { event.stopPropagation(); closePopup(); });
+            popupDiv.addEventListener('click', function(event) { if (event.target === popupDiv) { closePopup(); } });
+            const title = document.createElement('h2');
+            title.textContent = 'SeaLead Tracking';
+            title.style.cssText = 'margin-top:0; color:#0070A8;';
+            const description = document.createElement('p');
+            description.innerHTML = 'Please use the link below and enter your tracking number manually:';
+            const linkBox = document.createElement('div');
+            linkBox.style.cssText = 'background:#f4f4f4; padding:10px; border-radius:5px; margin:15px 0;';
+            const linkText = document.createElement('a');
+            if (type === 'container') {
+                linkText.href = `https://www.sea-lead.com/track-shipment/?container_id=${number}`;
+                linkText.textContent = `https://www.sea-lead.com/track-shipment/?container_id=${number}`;
+            } else {
+                linkText.href = 'https://www.sea-lead.com/track-shipment/';
+                linkText.textContent = 'https://www.sea-lead.com/track-shipment/';
+            }
+            linkText.target = '_blank';
+            linkText.style.cssText = 'word-break:break-all;';
+            linkBox.appendChild(linkText);
+            const numberLabel = document.createElement('p');
+            numberLabel.textContent = 'Your Tracking Number:';
+            numberLabel.style.cssText = 'margin-bottom:5px;';
+            const numberBox = document.createElement('div');
+            numberBox.style.cssText = 'background:#f4f4f4; padding:10px; border-radius:10px; position:relative; margin-bottom:15px;';
+            const numberText = document.createElement('div');
+            numberText.textContent = cleanNumber;
+            numberText.style.cssText = 'margin-bottom:10px;';
+            const copyButton = document.createElement('button');
+            copyButton.textContent = 'Copy';
+            copyButton.style.cssText = 'border:none; background:#0070A8; color:white; padding:8px 0; border-radius:10px; cursor:pointer; width:100%;';
+            copyButton.addEventListener('click', function(event) {
+                event.stopPropagation();
+                navigator.clipboard.writeText(cleanNumber).then(function() {
+                    copyButton.textContent = 'Copied';
+                    setTimeout(function() {
+                        copyButton.textContent = 'Copy';
+                    }, 2000);
+                });
+            });
+            numberBox.appendChild(numberText);
+            numberBox.appendChild(copyButton);
+            contentDiv.appendChild(closeButton);
+            contentDiv.appendChild(title);
+            contentDiv.appendChild(description);
+            contentDiv.appendChild(linkBox);
+            contentDiv.appendChild(numberLabel);
+            contentDiv.appendChild(numberBox);
+            popupDiv.appendChild(contentDiv);
+            document.body.appendChild(popupDiv);
+            return null;
+        }
+
+        // HMM deep link 處理
+        function handleHMMRedirect(baseUrl, number, type) {
+            // 去除 HMM SCAC code
+            let cleanNumber = number;
+            if (number.toUpperCase().startsWith('HDMU')) {
+                cleanNumber = number.substring(4);
+            }
+            const url = `https://www.hmm21.com/e-service/search/index.do?query=${encodeURIComponent(cleanNumber)}`;
+            window.open(url, '_blank');
+            return null;
+        }
+
+        // ZIM popup (英文，含超連結)
+        function handleZIMRedirect(baseUrl, number, type) {
+            const url = `https://www.zim.com/tools/track-a-shipment?consnumber=${encodeURIComponent(number)}`;
+            const popupDiv = document.createElement('div');
+            popupDiv.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.4); z-index:9999; display:flex; justify-content:center; align-items:center;';
+            function closePopup() {
+                if (popupDiv.parentNode) {
+                    document.body.removeChild(popupDiv);
+                }
+            }
+            const contentDiv = document.createElement('div');
+            contentDiv.style.cssText = 'background:white; padding:25px; border-radius:10px; max-width:500px; width:90%; position:relative;';
+            contentDiv.addEventListener('click', function(event) { event.stopPropagation(); });
+            const closeButton = document.createElement('button');
+            closeButton.innerHTML = '✕';
+            closeButton.style.cssText = 'position:absolute; top:10px; right:10px; border:none; background:none; font-size:24px; font-weight:bold; cursor:pointer; color:black; padding:0; width:30px; height:30px; line-height:26px; text-align:center;';
+            closeButton.addEventListener('click', function(event) { event.stopPropagation(); closePopup(); });
+            popupDiv.addEventListener('click', function(event) { if (event.target === popupDiv) { closePopup(); } });
+            const title = document.createElement('h2');
+            title.textContent = 'ZIM Tracking';
+            title.style.cssText = 'margin-top:0; color:#0070A8;';
+            const description = document.createElement('p');
+            description.innerHTML = 'Please click the link below to view your ZIM tracking result:';
+            const linkBox = document.createElement('div');
+            linkBox.style.cssText = 'background:#f4f4f4; padding:10px; border-radius:5px; margin:15px 0;';
+            const linkText = document.createElement('a');
+            linkText.href = url;
+            linkText.textContent = 'Click here to view ZIM tracking result';
+            linkText.target = '_blank';
+            linkText.rel = 'noopener';
+            linkText.style.cssText = 'word-break:break-all; color:#0070A8; font-weight:bold;';
+            linkBox.appendChild(linkText);
+            const numberLabel = document.createElement('p');
+            numberLabel.textContent = 'Your Tracking Number:';
+            numberLabel.style.cssText = 'margin-bottom:5px;';
+            const numberBox = document.createElement('div');
+            numberBox.style.cssText = 'background:#f4f4f4; padding:10px; border-radius:10px; position:relative; margin-bottom:15px;';
+            const numberText = document.createElement('div');
+            numberText.textContent = number;
+            numberText.style.cssText = 'margin-bottom:10px;';
+            const copyButton = document.createElement('button');
+            copyButton.textContent = 'Copy';
+            copyButton.style.cssText = 'border:none; background:#0070A8; color:white; padding:8px 0; border-radius:10px; cursor:pointer; width:100%;';
+            copyButton.addEventListener('click', function(event) {
+                event.stopPropagation();
+                navigator.clipboard.writeText(number).then(function() {
+                    copyButton.textContent = 'Copied';
+                    setTimeout(function() {
+                        copyButton.textContent = 'Copy';
+                    }, 2000);
+                });
+            });
+            numberBox.appendChild(numberText);
+            numberBox.appendChild(copyButton);
+            contentDiv.appendChild(closeButton);
+            contentDiv.appendChild(title);
+            contentDiv.appendChild(description);
+            contentDiv.appendChild(linkBox);
+            contentDiv.appendChild(numberLabel);
+            contentDiv.appendChild(numberBox);
+            popupDiv.appendChild(contentDiv);
+            document.body.appendChild(popupDiv);
+            return null;
+        }
+
+        // CMA CGM deep link
+        function handleCmaCgmRedirect(baseUrl, number, type) {
+            // 去除 SCAC code（CMDU）
+            let cleanNumber = number;
+            if (cleanNumber.toUpperCase().startsWith('CMDU')) {
+                cleanNumber = cleanNumber.substring(4);
+            }
+            let refType = 'Container';
+            if (type === 'bl') refType = 'BL';
+            if (type === 'booking') refType = 'Booking';
+            const url = `https://www.cma-cgm.com/ebusiness/tracking?SearchBy=ReferenceType&Reference=${encodeURIComponent(cleanNumber)}&ReferenceType=${refType}`;
+            window.open(url, '_blank');
+            return null;
+        }
+
+        // MSC, Yang Ming, Hapag-Lloyd popup (英文，去除SCAC code)
+        function handleManualPopupRedirect(company, number, type) {
+            // SCAC code
+            let cleanNumber = number;
+            
+            // 處理陽明和Hapag-Lloyd的SCAC代碼
+            if (company.name === 'Yang Ming') {
+                const ymPrefixes = ['YMLU', 'YMJA'];
+                for (const prefix of ymPrefixes) {
+                    if (cleanNumber.toUpperCase().startsWith(prefix)) {
+                        cleanNumber = cleanNumber.substring(prefix.length);
+                        break;
+                    }
+                }
+            }
+            // Hapag-Lloyd 不移除 SCAC code
+            
+            // 創建彈出視窗
+            const popupDiv = document.createElement('div');
+            popupDiv.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.4); z-index:9999; display:flex; justify-content:center; align-items:center;';
+            
+            function closePopup() {
+                if (popupDiv.parentNode) {
+                    document.body.removeChild(popupDiv);
+                }
+            }
+            
+            const contentDiv = document.createElement('div');
+            contentDiv.style.cssText = 'background:white; padding:25px; border-radius:10px; max-width:500px; width:90%; position:relative;';
+            contentDiv.addEventListener('click', function(event) { event.stopPropagation(); });
+            
+            const closeButton = document.createElement('button');
+            closeButton.innerHTML = '✕';
+            closeButton.style.cssText = 'position:absolute; top:10px; right:10px; border:none; background:none; font-size:24px; font-weight:bold; cursor:pointer; color:black; padding:0; width:30px; height:30px; line-height:26px; text-align:center;';
+            closeButton.addEventListener('click', function(event) { event.stopPropagation(); closePopup(); });
+            
+            popupDiv.addEventListener('click', function(event) { if (event.target === popupDiv) { closePopup(); } });
+            
+            const title = document.createElement('h2');
+            title.textContent = `${company.name} Tracking`;
+            title.style.cssText = 'margin-top:0; color:#0070A8;';
+            
+            const description = document.createElement('p');
+            description.innerHTML = `${company.name} website has security restrictions. Please use the link below and enter your tracking number manually:`;
+            
+            const linkBox = document.createElement('div');
+            linkBox.style.cssText = 'background:#f4f4f4; padding:10px; border-radius:5px; margin:15px 0;';
+            
+            const linkText = document.createElement('a');
+            let url = '';
+            if (company.name === 'MSC') url = 'https://www.msc.com/track-a-shipment';
+            if (company.name === 'Yang Ming') url = 'https://www.yangming.com/en';
+            if (company.name === 'Hapag-Lloyd') {
+                // 為 Hapag Lloyd 構建完整的追蹤 URL，保留 SCAC code
+                url = `https://www.hapag-lloyd.com/en/online-business/track/track-by-booking-solution.html?blno=${number}`;
+            }
+            
+            linkText.href = url;
+            linkText.textContent = url;
+            linkText.target = '_blank';
+            linkText.style.cssText = 'word-break:break-all;';
+            
+            // 為MSC和陽明添加點擊事件處理
+            if (company.name === 'MSC' || company.name === 'Yang Ming') {
+                linkText.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    window.open(url, '_blank');
+                    closePopup();
+                });
+            }
+            
+            linkBox.appendChild(linkText);
+            
+            const numberLabel = document.createElement('p');
+            numberLabel.textContent = 'Your Tracking Number:';
+            numberLabel.style.cssText = 'margin-bottom:5px;';
+            
+            const numberBox = document.createElement('div');
+            numberBox.style.cssText = 'background:#f4f4f4; padding:10px; border-radius:10px; position:relative; margin-bottom:15px;';
+            
+            const numberText = document.createElement('div');
+            // 對於 Hapag Lloyd，顯示完整號碼（包含 SCAC code）
+            numberText.textContent = company.name === 'Hapag-Lloyd' ? number : cleanNumber;
+            numberText.style.cssText = 'margin-bottom:10px;';
+            
+            const copyButton = document.createElement('button');
+            copyButton.textContent = 'Copy';
+            copyButton.style.cssText = 'border:none; background:#0070A8; color:white; padding:8px 0; border-radius:10px; cursor:pointer; width:100%;';
+            copyButton.addEventListener('click', function(event) {
+                event.stopPropagation();
+                navigator.clipboard.writeText(number).then(function() {
+                    copyButton.textContent = 'Copied';
+                    setTimeout(function() {
+                        copyButton.textContent = 'Copy';
+                    }, 2000);
+                });
+            });
+            
+            numberBox.appendChild(numberText);
+            numberBox.appendChild(copyButton);
+            
+            contentDiv.appendChild(closeButton);
+            contentDiv.appendChild(title);
+            contentDiv.appendChild(description);
+            contentDiv.appendChild(linkBox);
+            contentDiv.appendChild(numberLabel);
+            contentDiv.appendChild(numberBox);
+            
+            popupDiv.appendChild(contentDiv);
+            document.body.appendChild(popupDiv);
+            
+            return null;
+        }
+
+        // 針對OOCL的特殊處理
+        function handleOoclRedirect(baseUrl, number, type) {
+            console.log('Handling OOCL redirect with popup:', { number, type });
+            
+            // 創建彈出視窗元素
+            const popupDiv = document.createElement('div');
+            popupDiv.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.4); z-index:9999; display:flex; justify-content:center; align-items:center;';
+            
+            // 關閉彈窗函數
+            function closePopup() {
+                if (popupDiv.parentNode) {
+                    document.body.removeChild(popupDiv);
+                }
+            }
+            
+            // 創建內容容器
+            const contentDiv = document.createElement('div');
+            contentDiv.style.cssText = 'background:white; padding:25px; border-radius:10px; max-width:500px; width:90%; position:relative;';
+            
+            // 阻止內容區域的點擊事件傳播到背景
+            contentDiv.addEventListener('click', function(event) {
+                event.stopPropagation();
+            });
+            
+            // 創建關閉按鈕
+            const closeButton = document.createElement('button');
+            closeButton.innerHTML = '✕';
+            closeButton.style.cssText = 'position:absolute; top:10px; right:10px; border:none; background:none; font-size:24px; font-weight:bold; cursor:pointer; color:black; padding:0; width:30px; height:30px; line-height:26px; text-align:center;';
+            closeButton.addEventListener('click', function(event) {
+                event.stopPropagation();
+                closePopup();
+            });
+            
+            // 點擊背景關閉彈出視窗
+            popupDiv.addEventListener('click', function(event) {
+                if (event.target === popupDiv) {
+                    closePopup();
+                }
+            });
+            
+            // 標題
+            const title = document.createElement('h2');
+            title.textContent = 'OOCL Tracking';
+            title.style.cssText = 'margin-top:0; color:#0070A8;';
+            
+            // 說明文字
+            const description = document.createElement('p');
+            description.innerHTML = 'OOCL website has security restrictions. Please use the link below and enter your tracking number manually:';
+            
+            // OOCL鏈接
+            const linkBox = document.createElement('div');
+            linkBox.style.cssText = 'background:#f4f4f4; padding:10px; border-radius:5px; margin:15px 0;';
+            
+            const linkText = document.createElement('a');
+            linkText.href = 'https://www.oocl.com/eng/ourservices/eservices/cargotracking/Pages/cargotracking.aspx';
+            linkText.textContent = 'https://www.oocl.com/eng/ourservices/eservices/cargotracking/Pages/cargotracking.aspx';
+            linkText.target = '_blank';
+            linkText.style.cssText = 'word-break:break-all;';
+            
+            linkBox.appendChild(linkText);
+            
+            // 追蹤號碼標籤
+            const numberLabel = document.createElement('p');
+            numberLabel.textContent = 'Your Tracking Number:';
+            numberLabel.style.cssText = 'margin-bottom:5px;';
+            
+            const numberBox = document.createElement('div');
+            numberBox.style.cssText = 'background:#f4f4f4; padding:10px; border-radius:10px; position:relative; margin-bottom:15px;';
+            
+            const numberText = document.createElement('div');
+            numberText.textContent = number; // 保留完整號碼，包含SCAC code
+            numberText.style.cssText = 'margin-bottom:10px;';
+            
+            const copyButton = document.createElement('button');
+            copyButton.textContent = 'Copy';
+            copyButton.style.cssText = 'border:none; background:#0070A8; color:white; padding:8px 0; border-radius:10px; cursor:pointer; width:100%;';
+            copyButton.addEventListener('click', function(event) {
+                event.stopPropagation();
+                navigator.clipboard.writeText(number).then(function() {
+                    copyButton.textContent = 'Copied';
+                    setTimeout(function() {
+                        copyButton.textContent = 'Copy';
+                    }, 2000);
+                });
+            });
+            
+            numberBox.appendChild(numberText);
+            numberBox.appendChild(copyButton);
+            
+            // 組合元素
+            contentDiv.appendChild(closeButton);
+            contentDiv.appendChild(title);
+            contentDiv.appendChild(description);
+            contentDiv.appendChild(linkBox);
+            contentDiv.appendChild(numberLabel);
+            contentDiv.appendChild(numberBox);
+            
+            popupDiv.appendChild(contentDiv);
+            document.body.appendChild(popupDiv);
+            
+            return null; // 返回null表示已處理重定向
+        }
+
+        // 獲取重定向URL - 按照航運公司的不同規則處理
+        function getRedirectUrl(company, number, type) {
+            const baseUrl = type === 'container' ? company.containerUrl : company.blUrl;
+            
+            // 針對Evergreen的特殊處理
+            if (company.name === 'Evergreen') {
+                return handleEvergreenRedirect(baseUrl, number, type);
+            }
+            
+            // 針對COSCO的特殊處理
+            if (company.name === 'COSCO') {
+                return handleCoscoRedirect(baseUrl, number, type);
+            }
+            
+            // 針對ONE的特殊處理
+            if (company.name === 'ONE') {
+                return handleOneRedirect(baseUrl, number, type);
+            }
+            
+            // 針對Wan Hai的特殊處理
+            if (company.name === 'Wan Hai') {
+                return handleWanHaiRedirect(baseUrl, number, type);
+            }
+            
+            // 針對SeaLead的特殊處理
+            if (company.name === 'SeaLead') {
+                return handleSeaLeadRedirect(baseUrl, number, type);
+            }
+            
+            // 針對HMM的特殊處理
+            if (company.name === 'HMM') {
+                return handleHMMRedirect(baseUrl, number, type);
+            }
+            
+            // 針對ZIM的特殊處理
+            if (company.name === 'ZIM') {
+                return handleZIMRedirect(baseUrl, number, type);
+            }
+            
+            // 針對CMA CGM的特殊處理
+            if (company.name === 'CMA CGM') {
+                return handleCmaCgmRedirect(baseUrl, number, type);
+            }
+            
+            // 針對MSC的特殊處理（強制彈窗）
+            if (company.name === 'MSC') {
+                handleManualPopupRedirect(company, number, type);
+                return null;
+            }
+            
+            // 針對陽明的特殊處理（強制彈窗）
+            if (company.name === 'Yang Ming') {
+                handleManualPopupRedirect(company, number, type);
+                return null;
+            }
+
+            // 針對OOCL的特殊處理
+            if (company.name === 'OOCL') {
+                return handleOoclRedirect(baseUrl, number, type);
+            }
+            
+            // 針對其他公司的一般處理
+            return baseUrl + number;
+        }
+        
+        // 輔助函數：添加隱藏字段到表單
+        function addHiddenField(form, name, value) {
+            const field = document.createElement('input');
+            field.type = 'hidden';
+            field.name = name;
+            field.value = value;
+            form.appendChild(field);
+            return field;
+        }
+
+        // 處理Evergreen的重定向 - 改為彈窗顯示查詢連結與可複製號碼
+        function handleEvergreenRedirect(baseUrl, number, type) {
+            const scacPrefixes = ['EGLV', 'EISU', 'EGHU', 'EMCU', 'IMTU', 'LITU', 'EGSU', 'UGMU'];
+            let cleanNumber = number;
+            for (const prefix of scacPrefixes) {
+                if (cleanNumber.toUpperCase().startsWith(prefix)) {
+                    cleanNumber = cleanNumber.substring(prefix.length);
+                    break;
+                }
+            }
+            const popupDiv = document.createElement('div');
+            popupDiv.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.4); z-index:9999; display:flex; justify-content:center; align-items:center;';
+            function closePopup() {
+                if (popupDiv.parentNode) {
+                    document.body.removeChild(popupDiv);
+                }
+            }
+            const contentDiv = document.createElement('div');
+            contentDiv.style.cssText = 'background:white; padding:25px; border-radius:10px; max-width:500px; width:90%; position:relative;';
+            contentDiv.addEventListener('click', function(event) { event.stopPropagation(); });
+            const closeButton = document.createElement('button');
+            closeButton.innerHTML = '✕';
+            closeButton.style.cssText = 'position:absolute; top:10px; right:10px; border:none; background:none; font-size:24px; font-weight:bold; cursor:pointer; color:black; padding:0; width:30px; height:30px; line-height:26px; text-align:center;';
+            closeButton.addEventListener('click', function(event) { event.stopPropagation(); closePopup(); });
+            popupDiv.addEventListener('click', function(event) { if (event.target === popupDiv) { closePopup(); } });
+            const title = document.createElement('h2');
+            title.textContent = 'Evergreen Tracking';
+            title.style.cssText = 'margin-top:0; color:#0070A8;';
+            const description = document.createElement('p');
+            description.innerHTML = 'Please click the link below to visit Evergreen tracking page and paste your tracking number manually:';
+            const linkBox = document.createElement('div');
+            linkBox.style.cssText = 'background:#f4f4f4; padding:10px; border-radius:5px; margin:15px 0;';
+            const linkText = document.createElement('a');
+            linkText.href = 'https://ct.shipmentlink.com/servlet/TDB1_CargoTracking.do';
+            linkText.textContent = 'https://ct.shipmentlink.com/servlet/TDB1_CargoTracking.do';
+            linkText.target = '_blank';
+            linkText.style.cssText = 'word-break:break-all;';
+            linkBox.appendChild(linkText);
+            const numberLabel = document.createElement('p');
+            numberLabel.textContent = 'Your Tracking Number:';
+            numberLabel.style.cssText = 'margin-bottom:5px;';
+            const numberBox = document.createElement('div');
+            numberBox.style.cssText = 'background:#f4f4f4; padding:10px; border-radius:10px; position:relative; margin-bottom:15px;';
+            const numberText = document.createElement('div');
+            numberText.textContent = cleanNumber;
+            numberText.style.cssText = 'margin-bottom:10px;';
+            const copyButton = document.createElement('button');
+            copyButton.textContent = 'Copy';
+            copyButton.style.cssText = 'border:none; background:#0070A8; color:white; padding:8px 0; border-radius:10px; cursor:pointer; width:100%;';
+            copyButton.addEventListener('click', function(event) {
+                event.stopPropagation();
+                navigator.clipboard.writeText(cleanNumber).then(function() {
+                    copyButton.textContent = 'Copied';
+                    setTimeout(function() {
+                        copyButton.textContent = 'Copy';
+                    }, 2000);
+                });
+            });
+            numberBox.appendChild(numberText);
+            numberBox.appendChild(copyButton);
+            contentDiv.appendChild(closeButton);
+            contentDiv.appendChild(title);
+            contentDiv.appendChild(description);
+            contentDiv.appendChild(linkBox);
+            contentDiv.appendChild(numberLabel);
+            contentDiv.appendChild(numberBox);
+            popupDiv.appendChild(contentDiv);
+            document.body.appendChild(popupDiv);
+            return null;
+        }
+
+        // 針對COSCO的特殊處理
+        function handleCoscoRedirect(baseUrl, number, type) {
+            console.log('Handling COSCO redirect with direct URL:', { number, type });
+            
+            let url = '';
+            if (type === 'container') {
+                // 處理集裝箱號碼：前四個字母大寫，後面數字保持不變
+                let processedNumber = number;
+                if (number.length >= 4) {
+                    const prefix = number.substring(0, 4).toUpperCase();
+                    const rest = number.substring(4);
+                    processedNumber = prefix + rest;
+                } else {
+                    processedNumber = number.toUpperCase();
+                }
+                
+                url = `https://elines.coscoshipping.com/ebusiness/cargoTracking?trackingType=CONTAINER&number=${processedNumber}`;
+                console.log('COSCO Container URL with formatted number:', url);
+                
+                // 使用window.open直接在函數內打開URL
+                window.open(url, '_blank');
+                return null; // 返回null表示已處理
+            } else {
+                // 對BL號碼，保留前綴處理
+                let cleanNumber = number;
+                // 檢查COSCO前綴
+                const coscoPrefixes = ['COSU', 'CAAU', 'CBHU', 'CCLU', 'CXNU', 'CSLU', 'CSNU'];
+                for (const prefix of coscoPrefixes) {
+                    if (number.toUpperCase().startsWith(prefix)) {
+                        cleanNumber = number.substring(prefix.length); // 移除前綴
+                        break;
+                    }
+                }
+                url = `https://elines.coscoshipping.com/ebusiness/cargoTracking?trackingType=BILLOFLADING&number=${cleanNumber}`;
+                console.log('COSCO BL URL:', url);
+                return url;
+            }
+        }
+
+        // Wan Hai的特殊處理，顯示彈出視窗並提供可複製的BL號碼
+        function handleWanHaiRedirect(baseUrl, number, type) {
+            console.log('Handling Wan Hai redirect with popup:', { number, type });
+            
+            if (type === 'bl') {
+                // 處理BL號碼，移除SCAC代碼
+                let cleanNumber = number;
+                if (number.toUpperCase().startsWith('WHLC')) {
+                    cleanNumber = number.substring(4);
+                }
+                
+                // 創建彈出視窗元素
+                const popupDiv = document.createElement('div');
+                popupDiv.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.4); z-index:9999; display:flex; justify-content:center; align-items:center;';
+                
+                // 關閉彈窗函數
+                function closePopup() {
+                    if (popupDiv.parentNode) {
+                        document.body.removeChild(popupDiv);
+                    }
+                }
+                
+                // 創建內容容器
+                const contentDiv = document.createElement('div');
+                contentDiv.style.cssText = 'background:white; padding:25px; border-radius:10px; max-width:500px; width:90%; position:relative;';
+                
+                // 阻止內容區域的點擊事件傳播到背景
+                contentDiv.addEventListener('click', function(event) {
+                    event.stopPropagation();
+                });
+                
+                // 創建關閉按鈕
+                const closeButton = document.createElement('button');
+                closeButton.innerHTML = '✕';
+                closeButton.style.cssText = 'position:absolute; top:10px; right:10px; border:none; background:none; font-size:24px; font-weight:bold; cursor:pointer; color:black; padding:0; width:30px; height:30px; line-height:26px; text-align:center;';
+                // 使用addEventListener而不是onclick
+                closeButton.addEventListener('click', function(event) {
+                    event.stopPropagation();
+                    closePopup();
+                });
+                
+                // 點擊背景關閉彈出視窗
+                popupDiv.addEventListener('click', function(event) {
+                    if (event.target === popupDiv) {
+                        closePopup();
+                    }
+                });
+                
+                // 標題
+                const title = document.createElement('h2');
+                title.textContent = 'Wan Hai Lines Tracking';
+                title.style.cssText = 'margin-top:0; color:#0070A8;';
+                
+                // 說明文字
+                const description = document.createElement('p');
+                description.innerHTML = 'Wan Hai website has security restrictions. Please use the link below and enter your tracking number manually:';
+                
+                // 萬海鏈接
+                const linkBox = document.createElement('div');
+                linkBox.style.cssText = 'background:#f4f4f4; padding:10px; border-radius:5px; margin:15px 0;';
+                
+                const linkText = document.createElement('a');
+                linkText.href = 'https://www.wanhai.com/views/cargo_track_v2/tracking_query.xhtml';
+                linkText.textContent = 'https://www.wanhai.com/views/cargo_track_v2/tracking_query.xhtml';
+                linkText.target = '_blank';
+                linkText.style.cssText = 'word-break:break-all;';
+                
+                linkBox.appendChild(linkText);
+                
+                // 提單號碼
+                const numberLabel = document.createElement('p');
+                numberLabel.textContent = 'Your Bill of Lading Number:';
+                numberLabel.style.cssText = 'margin-bottom:5px;';
+                
+                const numberBox = document.createElement('div');
+                numberBox.style.cssText = 'background:#f4f4f4; padding:10px; border-radius:10px; position:relative; margin-bottom:15px;';
+                
+                const numberText = document.createElement('div');
+                numberText.textContent = cleanNumber;
+                numberText.style.cssText = 'margin-bottom:10px;';
+                
+                const copyButton = document.createElement('button');
+                copyButton.textContent = 'Copy';
+                copyButton.style.cssText = 'border:none; background:#0070A8; color:white; padding:8px 0; border-radius:10px; cursor:pointer; width:100%;';
+                copyButton.addEventListener('click', function(event) {
+                    event.stopPropagation();
+                    navigator.clipboard.writeText(cleanNumber).then(function() {
+                        copyButton.textContent = 'Copied';
+                        setTimeout(function() {
+                            copyButton.textContent = 'Copy';
+                        }, 2000);
+                    });
+                });
+                
+                numberBox.appendChild(numberText);
+                numberBox.appendChild(copyButton);
+                
+                // 組合元素
+                contentDiv.appendChild(closeButton);
+                contentDiv.appendChild(title);
+                contentDiv.appendChild(description);
+                contentDiv.appendChild(linkBox);
+                contentDiv.appendChild(numberLabel);
+                contentDiv.appendChild(numberBox);
+                
+                popupDiv.appendChild(contentDiv);
+                document.body.appendChild(popupDiv);
+            } else {
+                // 集裝箱處理，使用原來的alert方式
+                const message = `Wan Hai website has security restrictions.\n\nYour container number: ${number}\n\nPlease use the following URL for tracking:\nhttps://www.wanhai.com/views/cargo_track_v2/tracking_query.xhtml`;
+                
+                alert(message);
+                window.open('https://www.wanhai.com/views/cargo_track_v2/tracking_query.xhtml', '_blank');
+            }
+            
+            // 返回null表示已處理重定向
+            return null;
+        }
+
+        // 執行搜索
+        function performSearch() {
+            const searchType = document.querySelector('input[name="searchType"]:checked').value;
+            const value = searchInput.value.trim().toUpperCase();
+            
+            // 清除錯誤消息
+            errorMessage.textContent = '';
+            
+            // 驗證輸入
+            if (!value) {
+                errorMessage.textContent = '請輸入一個值。';
+                return;
+            }
+            
+            // 根據搜尋類型使用不同邏輯
+            if (searchType === 'container') {
+                // 使用選擇的公司
+                const selectedCompanyName = companySelect.value;
+                
+                if (!selectedCompanyName) {
+                    errorMessage.textContent = '請選擇一個航運公司。';
+                    return;
+                }
+                
+                const matchedCompany = shippingCompanies.find(company => company.name === selectedCompanyName);
+                if (!matchedCompany) {
+                    errorMessage.textContent = '請選擇有效的航運公司。';
+                    return;
+                }
+                
+                // 獲取重定向URL
+                const redirectUrl = getRedirectUrl(matchedCompany, value, searchType);
+                
+                // 如果redirectUrl為null，表示已在特殊處理函數中處理了重定向
+                if (redirectUrl === null) {
+                    console.log('Redirect handled by special handler');
+                    return;
+                }
+                
+                // 對於其他公司使用標準重定向
+                if (redirectUrl) {
+                    console.log(`正在重定向到 ${matchedCompany.name} 的追蹤頁面:`, redirectUrl);
+                    window.open(redirectUrl, '_blank');
+                }
+            } else if (searchType === 'bl') {
+                // BL tracking 使用 SCAC code 判斷
+                const fullNumber = value;
+                let matchedCompany = null;
+                
+                // 檢查是否為MSC提單號碼 (MEDU or MSCU)
+                if (fullNumber.startsWith('MEDU') || fullNumber.startsWith('MSCU')) {
+                    matchedCompany = shippingCompanies.find(company => company.name === 'MSC');
+                } else {
+                    // 對於其他公司，檢查SCAC代碼
+                    for (const company of shippingCompanies) {
+                        for (const code of company.codes) {
+                            if (fullNumber.startsWith(code)) {
+                                matchedCompany = company;
+                                break;
+                            }
+                        }
+                        if (matchedCompany) break;
+                    }
+                }
+                
+                if (!matchedCompany) {
+                    errorMessage.textContent = '無法識別的航運公司代碼。';
+                    return;
+                }
+                
+                // 獲取重定向URL
+                const redirectUrl = getRedirectUrl(matchedCompany, fullNumber, searchType);
+                
+                // 如果redirectUrl為null，表示已在特殊處理函數中處理了重定向
+                if (redirectUrl === null) {
+                    console.log('Redirect handled by special handler');
+                    return;
+                }
+                
+                // 對於其他公司使用標準重定向
+                if (redirectUrl) {
+                    console.log(`正在重定向到 ${matchedCompany.name} 的追蹤頁面:`, redirectUrl);
+                    window.open(redirectUrl, '_blank');
+                }
+            }
+        }
+
+        // 事件監聽器
+        searchTypeInputs.forEach(input => {
+            input.addEventListener('change', () => {
+                updateInputHelpers();
+            });
+        });
+        
+        searchButton.addEventListener('click', performSearch);
+        
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                performSearch();
+            }
+        });
+
+        // 初始化
+        renderCompanyCards();
+        updateInputHelpers();
+
+        // 填充公司選擇下拉選單
+        shippingCompanies.forEach(company => {
+            const option = document.createElement('option');
+            option.value = company.name;
+            option.textContent = company.name;
+            companySelect.appendChild(option);
+        });
+
+        // 添加公司選擇變更事件
+        companySelect.addEventListener('change', function() {
+            const selectedCompany = shippingCompanies.find(c => c.name === this.value);
+            if (selectedCompany) {
+                const searchType = document.querySelector('input[name="searchType"]:checked').value;
+                
+                // 只在集裝箱搜尋時更新提示訊息
+                if (searchType === 'container') {
+                    inputHelp.textContent = `Please enter the complete container number for ${selectedCompany.name}.`;
+                }
+            }
+        });
+
+        // Tab 切換功能
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                // 移除所有 tab 的 active 類
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                // 添加當前 tab 的 active 類
+                tab.classList.add('active');
+                
+                // 移除所有 tab-content 的 active 類
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                // 顯示對應的內容
+                const tabId = tab.getAttribute('data-tab');
+                document.getElementById(`${tabId}-content`).classList.add('active');
+            });
+        });
+
+        // Logistics Chat 功能
+        const chatInput = document.getElementById('chat-input');
+        const chatSendBtn = document.getElementById('chat-send-btn');
+        const chatMessages = document.getElementById('chat-messages');
+        const limitWarning = document.getElementById('limit-warning');
+        
+        // OpenAI API Key - 請替換為您的實際key
+        const OPENAI_API_KEY = 'YOUR_API_KEY_HERE';
+        
+        // 每日聊天限制
+        const MAX_DAILY_CHATS = 10;
+        const STORAGE_KEY = 'logistics_chat_usage';
+        
+        // 檢查並初始化使用情況
+        function initChatUsage() {
+            const now = new Date();
+            const today = now.toISOString().split('T')[0]; // 獲取當前日期 YYYY-MM-DD
+            
+            const storedUsage = localStorage.getItem(STORAGE_KEY);
+            let usage = storedUsage ? JSON.parse(storedUsage) : null;
+            
+            // 如果沒有存儲數據或日期不是今天，重置計數器
+            if (!usage || usage.date !== today) {
+                usage = {
+                    date: today,
+                    count: 0
+                };
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(usage));
+            }
+            
+            updateLimitWarning(usage.count);
+            
+            return usage;
+        }
+        
+        // 更新使用次數並存儲
+        function updateChatUsage() {
+            const usage = initChatUsage();
+            usage.count++;
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(usage));
+            updateLimitWarning(usage.count);
+            return usage.count <= MAX_DAILY_CHATS;
+        }
+        
+        // 更新限制警告信息
+        function updateLimitWarning(count) {
+            limitWarning.textContent = `You have used ${count}/${MAX_DAILY_CHATS} daily questions.`;
+            
+            if (count >= MAX_DAILY_CHATS) {
+                limitWarning.style.color = 'var(--error-color)';
+                chatInput.disabled = true;
+                chatSendBtn.disabled = true;
+                chatInput.placeholder = 'Daily limit reached. Please try again tomorrow.';
+            } else {
+                limitWarning.style.color = '#888';
+                chatInput.disabled = false;
+                chatSendBtn.disabled = false;
+                chatInput.placeholder = 'Type your question here...';
+            }
+        }
+        
+        // 添加消息到聊天窗口
+        function addMessage(text, isUser = false) {
+            const message = document.createElement('div');
+            message.className = `message ${isUser ? 'user-message' : 'ai-message'}`;
+            
+            // 支持簡單的 Markdown 格式（代碼塊）
+            if (!isUser && text.includes('```')) {
+                let formattedText = text;
+                const codeRegex = /```([\s\S]*?)```/g;
+                formattedText = formattedText.replace(codeRegex, (match, code) => {
+                    return `<pre>${code.trim()}</pre>`;
+                });
+                message.innerHTML = formattedText;
+            } else {
+                message.textContent = text;
+            }
+            
+            chatMessages.appendChild(message);
+            chatMessages.scrollTop = chatMessages.scrollHeight; // 滾動到底部
+            return message;
+        }
+        
+        // 顯示"正在輸入"指示
+        function showTypingIndicator() {
+            const indicator = document.createElement('div');
+            indicator.className = 'typing-indicator';
+            indicator.id = 'typing-indicator';
+            
+            const text = document.createElement('span');
+            text.textContent = 'Assistant is typing';
+            
+            const dot1 = document.createElement('div');
+            dot1.className = 'dot';
+            
+            const dot2 = document.createElement('div');
+            dot2.className = 'dot';
+            
+            const dot3 = document.createElement('div');
+            dot3.className = 'dot';
+            
+            indicator.appendChild(text);
+            indicator.appendChild(dot1);
+            indicator.appendChild(dot2);
+            indicator.appendChild(dot3);
+            
+            chatMessages.appendChild(indicator);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            return indicator;
+        }
+        
+        // 隱藏"正在輸入"指示
+        function hideTypingIndicator() {
+            const indicator = document.getElementById('typing-indicator');
+            if (indicator) {
+                indicator.remove();
+            }
+        }
+        
+        // 發送消息到 OpenAI API
+        async function sendToOpenAI(userMessage) {
+            const typingIndicator = showTypingIndicator();
+            
+            try {
+                const response = await fetch('https://api.openai.com/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${OPENAI_API_KEY}`
+                    },
+                    body: JSON.stringify({
+                        model: 'gpt-4',
+                        messages: [
+                            {
+                                role: 'system',
+                                content: 'You are a helpful logistics assistant. Provide concise and accurate information about shipping, containers, ports, customs, and international trade. Include examples and practical tips when relevant.'
+                            },
+                            {
+                                role: 'user',
+                                content: userMessage
+                            }
+                        ],
+                        max_tokens: 1000
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`API request failed with status ${response.status}`);
+                }
+                
+                const data = await response.json();
+                const aiResponse = data.choices[0].message.content;
+                
+                hideTypingIndicator();
+                addMessage(aiResponse);
+                
+            } catch (error) {
+                console.error('Error calling OpenAI API:', error);
+                hideTypingIndicator();
+                addMessage('Sorry, I encountered an error while processing your request. Please try again later.');
+            }
+        }
+        
+        // 初始化聊天使用情況
+        initChatUsage();
+        
+        // 發送按鈕點擊事件
+        chatSendBtn.addEventListener('click', () => {
+            const message = chatInput.value.trim();
+            if (!message) return;
+            
+            if (updateChatUsage()) {
+                addMessage(message, true);
+                chatInput.value = '';
+                sendToOpenAI(message);
+            } else {
+                addMessage('Sorry, you have reached your daily limit of questions. Please try again tomorrow.', false);
+            }
+        });
+        
+        // 支持按Enter鍵發送
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                chatSendBtn.click();
+            }
+        });
+
+        // 切換到 Tracking tab 的函數
+        function switchToTrackingTab() {
+            // 移除所有 tab 的 active 類
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            // 找到 tracking tab 並添加 active 類
+            const trackingTab = document.querySelector('.tab[data-tab="tracking"]');
+            if (trackingTab) {
+                trackingTab.classList.add('active');
+            }
+            
+            // 移除所有 tab-content 的 active 類
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            // 顯示 tracking content
+            const trackingContent = document.getElementById('tracking-content');
+            if (trackingContent) {
+                trackingContent.classList.add('active');
+            }
+        }
+    </script>
+</body>
+</html> 
