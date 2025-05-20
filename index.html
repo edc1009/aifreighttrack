@@ -181,6 +181,23 @@
             color: #666;
         }
         
+        .footer-author {
+            margin-top: 0.5rem;
+            font-size: 0.875rem;
+            color: #666;
+        }
+
+        .footer-author a {
+            color: var(--primary-color);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .footer-author a:hover {
+            color: #0051b3;
+            text-decoration: underline;
+        }
+        
         @media (max-width: 768px) {
             .companies-grid {
                 grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -498,6 +515,7 @@
         
         <footer>
             <p>&copy; <span id="currentYear"></span> Container/BL Redirect Tracker. All rights reserved.</p>
+            <p class="footer-author">Created by <a href="https://www.linkedin.com/in/edward-chen-b0b8b8237/" target="_blank" rel="noopener">Edward Chen</a></p>
         </footer>
     </div>
     
