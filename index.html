@@ -713,7 +713,7 @@
                 scacExamples.style.display = "none";
             } else {
                 searchInput.placeholder = "Enter bill of lading number with prefix";
-                inputHelp.textContent = "Please include the prefix code (e.g., MAEU, COSU) when entering your bill of lading number.";
+                inputHelp.textContent = "Please include the SCAC code (e.g., MAEU, COSU) when entering your bill of lading number.";
                 // BL搜尋時隱藏公司選擇下拉選單
                 companySelect.parentElement.style.display = "none";
                 // BL搜尋時顯示SCAC範例
@@ -1191,6 +1191,16 @@
         // 獲取重定向URL - 按照航運公司的不同規則處理
         function getRedirectUrl(company, number, type) {
             const baseUrl = type === 'container' ? company.containerUrl : company.blUrl;
+            
+            // 針對Maersk的特殊處理
+            if (company.name === 'Maersk' && type === 'bl') {
+                // 移除MAEU前綴
+                let cleanNumber = number;
+                if (number.toUpperCase().startsWith('MAEU')) {
+                    cleanNumber = number.substring(4);
+                }
+                return baseUrl + cleanNumber;
+            }
             
             // 針對Evergreen的特殊處理
             if (company.name === 'Evergreen') {
