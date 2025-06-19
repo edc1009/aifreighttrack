@@ -1,75 +1,51 @@
 # Container/BL Redirect Tracker
 
-A web application for redirecting users to the appropriate shipping company tracking page based on Container Number or Bill of Lading (BL) Number.
+A web application for tracking containers and bills of lading across multiple shipping companies.
 
 ## Features
 
-- Input Container Number or BL Number
-- Automatic detection of shipping company based on input
-- Redirect to shipping company tracking page in a new tab
-- Display of supported shipping companies with logos
-- Mobile responsive design
-- Google Analytics integration
+- Container number tracking with shipping line selection
+- Bill of Lading tracking with SCAC code detection
+- Support for major shipping lines:
+  - Maersk
+  - COSCO
+  - Wan Hai
+  - SeaLead
+  - HMM
+  - MSC
+  - ONE
+  - ZIM
+  - Yang Ming
+  - OOCL
+  - Hapag-Lloyd
+  - CMA CGM
+  - Evergreen
 
-## Tech Stack
+## Usage
 
-- Next.js 14
-- React 18
-- TypeScript
-- Tailwind CSS
+1. Select tracking type (Container or BL)
+2. For Container tracking:
+   - Select shipping company from dropdown
+   - Enter container number
+3. For BL tracking:
+   - Enter BL number with SCAC code
+4. Click Search to be redirected to the appropriate tracking page
 
-## Getting Started
+## Development
 
-### Prerequisites
+This is a static web application using HTML, CSS, and JavaScript.
 
-- Node.js 16+
-- npm or yarn
-
-### Installation
-
+To run locally:
 1. Clone the repository
-   ```
-   git clone https://github.com/yourusername/container-bl-redirect-tracker.git
-   cd container-bl-redirect-tracker
-   ```
+2. Open `index.html` in your browser
 
-2. Install dependencies
-   ```
-   npm install
-   # or
-   yarn install
-   ```
+## Contributing
 
-3. Configure environment variables
-   Create a `.env.local` file in the root directory with:
-   ```
-   NEXT_PUBLIC_GA_ID=your-google-analytics-id
-   ```
-
-4. Add shipping company logos
-   Place shipping company logo images in the `public/images` directory. The image filenames should match those defined in `app/utils/shippingCompanies.ts`.
-
-5. Start the development server
-   ```
-   npm run dev
-   # or
-   yarn dev
-   ```
-
-6. Open [http://localhost:3000](http://localhost:3000) in your browser
-
-## Deployment
-
-The application can be deployed to Vercel, Netlify, or any other platform supporting Next.js.
-
-```
-npm run build
-npm run start
-```
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
 ## License
 
-MIT
+[MIT](https://choosealicense.com/licenses/mit/)
 
 📦 Container/BL Redirect Tracker - Product Specification (MVP)
 

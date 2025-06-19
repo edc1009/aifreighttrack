@@ -1,0 +1,637 @@
+:root {
+    /* Material Design 3 顏色系統 */
+    --md-sys-color-primary: #6750A4;
+    --md-sys-color-on-primary: #FFFFFF;
+    --md-sys-color-primary-container: #EADDFF;
+    --md-sys-color-on-primary-container: #21005D;
+    
+    --md-sys-color-secondary: #625B71;
+    --md-sys-color-on-secondary: #FFFFFF;
+    --md-sys-color-secondary-container: #E8DEF8;
+    --md-sys-color-on-secondary-container: #1D192B;
+    
+    --md-sys-color-surface: #FEF7FF;
+    --md-sys-color-on-surface: #1D1B20;
+    --md-sys-color-surface-variant: #E7E0EC;
+    --md-sys-color-on-surface-variant: #49454F;
+    
+    --md-sys-color-outline: #79747E;
+    --md-sys-color-outline-variant: #CAC4D0;
+    
+    --md-sys-color-error: #BA1A1A;
+    --md-sys-color-on-error: #FFFFFF;
+    --md-sys-color-error-container: #FFDAD6;
+    --md-sys-color-on-error-container: #410002;
+    
+    /* 向後兼容的別名 */
+    --primary-color: var(--md-sys-color-primary);
+    --secondary-color: var(--md-sys-color-surface);
+    --border-color: var(--md-sys-color-outline-variant);
+    --text-color: var(--md-sys-color-on-surface);
+    --error-color: var(--md-sys-color-error);
+    --info-color: var(--md-sys-color-primary);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    line-height: 1.6;
+    color: var(--text-color);
+    background-color: var(--secondary-color);
+}
+
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+header {
+    text-align: center;
+    margin: 2rem 0;
+}
+
+h1 {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.description {
+    font-size: 1rem;
+    color: #666;
+    max-width: 600px;
+    margin: 0 auto 1.5rem;
+}
+
+.search-form {
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: var(--md-sys-color-surface);
+    border-radius: 12px;
+    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
+    border: 1px solid var(--md-sys-color-outline-variant);
+}
+
+.radio-group {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.radio-label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.radio-label input {
+    margin-right: 0.5rem;
+}
+
+.input-group {
+    margin-bottom: 1rem;
+}
+
+input[type="text"], select, .chat-input {
+    background-color: var(--md-sys-color-surface-variant);
+    border: 1px solid var(--md-sys-color-outline);
+    border-radius: 4px;
+    color: var(--md-sys-color-on-surface);
+    padding: 16px;
+    font-size: 16px;
+    line-height: 24px;
+    width: 100%;
+}
+
+input[type="text"]:focus, select:focus, .chat-input:focus {
+    outline: 2px solid var(--md-sys-color-primary);
+    border-color: var(--md-sys-color-primary);
+}
+
+.error-message {
+    color: var(--error-color);
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+    min-height: 1.5rem;
+}
+
+button {
+    background-color: var(--md-sys-color-primary);
+    color: var(--md-sys-color-on-primary);
+    border: none;
+    border-radius: 20px;
+    padding: 10px 24px;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 20px;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.2, 0.0, 0.0, 1.0);
+    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
+}
+
+button:hover {
+    background-color: color-mix(in srgb, var(--md-sys-color-primary) 92%, var(--md-sys-color-on-primary));
+    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3), 0px 2px 6px 2px rgba(0, 0, 0, 0.15);
+}
+
+.companies {
+    margin: 2rem 0;
+}
+
+.companies-title {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+}
+
+.companies-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.company-card {
+    background-color: var(--md-sys-color-surface);
+    border-radius: 12px;
+    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
+    border: 1px solid var(--md-sys-color-outline-variant);
+    padding: 1rem;
+    text-align: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.company-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3), 0px 2px 6px 2px rgba(0, 0, 0, 0.15);
+}
+
+.company-logo {
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0.5rem;
+}
+
+.company-placeholder {
+    width: 60px;
+    height: 60px;
+    background-color: #e2e8f0;
+    border-radius: 0.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: #4a5568;
+    margin: 0 auto;
+}
+
+.company-name {
+    font-weight: bold;
+    margin-bottom: 0.25rem;
+}
+
+.company-code {
+    font-size: 0.875rem;
+    color: #666;
+}
+
+footer {
+    text-align: center;
+    padding: 2rem 0;
+    margin-top: 2rem;
+    border-top: 1px solid var(--border-color);
+    font-size: 0.875rem;
+    color: #666;
+}
+
+@media (max-width: 768px) {
+    .companies-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    }
+}
+
+.info-message {
+    color: var(--info-color);
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    margin-bottom: 0.5rem;
+    font-style: italic;
+}
+
+.scac-code-example {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+    font-size: 0.75rem;
+}
+
+.scac-tag {
+    background-color: #e2e8f0;
+    padding: 0.125rem 0.375rem;
+    border-radius: 0.25rem;
+    white-space: nowrap;
+}
+
+/* Tab 樣式 */
+.tabs {
+    display: flex;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.tab {
+    padding: 12px 16px;
+    border-radius: 20px;
+    background-color: transparent;
+    color: var(--md-sys-color-on-surface);
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.2, 0.0, 0.0, 1.0);
+}
+
+.tab.active {
+    background-color: var(--md-sys-color-secondary-container);
+    color: var(--md-sys-color-on-secondary-container);
+}
+
+.tab:hover:not(.active) {
+    background-color: color-mix(in srgb, var(--md-sys-color-on-surface) 8%, transparent);
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* 聊天界面樣式 */
+.chat-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    background-color: var(--md-sys-color-surface);
+    border-radius: 12px;
+    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
+    border: 1px solid var(--md-sys-color-outline-variant);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    height: 600px;
+}
+
+.chat-header {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 1rem;
+    text-align: center;
+}
+
+.chat-messages {
+    flex: 1;
+    padding: 1rem;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.message {
+    max-width: 80%;
+    padding: 0.75rem 1rem;
+    border-radius: 1rem;
+    position: relative;
+    line-height: 1.5;
+}
+
+.user-message {
+    align-self: flex-end;
+    background-color: var(--primary-color);
+    color: white;
+    border-bottom-right-radius: 0.25rem;
+}
+
+.ai-message {
+    align-self: flex-start;
+    background-color: #f1f1f1;
+    border-bottom-left-radius: 0.25rem;
+}
+
+.ai-message pre {
+    background-color: #f8f8f8;
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    overflow-x: auto;
+    margin: 0.5rem 0;
+}
+
+.chat-input-container {
+    padding: 1rem;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    gap: 0.5rem;
+}
+
+.chat-input {
+    flex: 1;
+    resize: none;
+    width: 100%;
+}
+
+.chat-send-btn {
+    width: auto;
+    padding: 0.75rem 1.5rem;
+}
+
+.typing-indicator {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.5rem 1rem;
+    background-color: #f1f1f1;
+    border-radius: 1rem;
+    border-bottom-left-radius: 0.25rem;
+    align-self: flex-start;
+    font-style: italic;
+    color: #666;
+}
+
+.dot {
+    width: 8px;
+    height: 8px;
+    background-color: #666;
+    border-radius: 50%;
+    animation: typing 1.5s infinite;
+}
+
+.dot:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.dot:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes typing {
+    0% { opacity: 0.2; transform: translateY(0); }
+    50% { opacity: 1; transform: translateY(-5px); }
+    100% { opacity: 0.2; transform: translateY(0); }
+}
+
+.limit-warning {
+    margin-top: 0.5rem;
+    color: #888;
+    font-size: 0.75rem;
+    text-align: center;
+}
+
+/* Material Design 3 Typography */
+.display-large {
+    font-size: 57px;
+    line-height: 64px;
+    font-weight: 400;
+}
+
+.display-medium {
+    font-size: 45px;
+    line-height: 52px;
+    font-weight: 400;
+}
+
+.headline-large {
+    font-size: 32px;
+    line-height: 40px;
+    font-weight: 400;
+}
+
+.headline-medium {
+    font-size: 28px;
+    line-height: 36px;
+    font-weight: 400;
+}
+
+.title-large {
+    font-size: 22px;
+    line-height: 28px;
+    font-weight: 400;
+}
+
+.body-large {
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 400;
+}
+
+.body-medium {
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 400;
+}
+
+.label-large {
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 500;
+}
+
+/* 頁面頂部布局 */
+.top-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 0;
+    margin-bottom: 1rem;
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.logo {
+    height: 35px;
+    margin-right: 1rem;
+    transition: transform 0.2s;
+}
+
+.logo:hover {
+    transform: scale(1.05);
+}
+
+/* 確保tabs在右側有空間 */
+.tabs-container {
+    margin-right: 20px;
+}
+
+/* Tracking分頁標題樣式 */
+.tracking-title {
+    text-align: center;
+    font-size: 2rem;
+    margin: 1rem auto 1.5rem;
+    max-width: 600px;
+}
+
+/* Material Design 3 Modal Styles */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.32);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+.modal-overlay.modal-show {
+    opacity: 1;
+}
+
+.modal-container {
+    background-color: var(--md-sys-color-surface);
+    border-radius: 28px;
+    box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.2), 0px 6px 10px rgba(0, 0, 0, 0.14), 0px 1px 18px rgba(0, 0, 0, 0.12);
+    max-width: 560px;
+    width: 90%;
+    max-height: 80vh;
+    overflow: hidden;
+    transform: scale(0.8);
+    transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+.modal-overlay.modal-show .modal-container {
+    transform: scale(1);
+}
+
+.modal-content {
+    padding: 24px;
+    text-align: center;
+}
+
+.modal-icon {
+    margin-bottom: 16px;
+    color: var(--md-sys-color-primary);
+    display: flex;
+    justify-content: center;
+}
+
+.modal-title {
+    font-size: 24px;
+    line-height: 32px;
+    font-weight: 400;
+    color: var(--md-sys-color-on-surface);
+    margin-bottom: 16px;
+}
+
+.modal-description {
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 400;
+    color: var(--md-sys-color-on-surface-variant);
+    margin-bottom: 16px;
+    text-align: left;
+}
+
+.modal-description:last-of-type {
+    margin-bottom: 24px;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.modal-btn {
+    padding: 10px 24px;
+    border-radius: 20px;
+    border: none;
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0.0, 0.2, 1);
+    min-width: 64px;
+    position: relative;
+    overflow: hidden;
+}
+
+.modal-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: currentColor;
+    opacity: 0;
+    transition: opacity 0.2s cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+.modal-btn:hover::before {
+    opacity: 0.08;
+}
+
+.modal-btn:focus::before {
+    opacity: 0.12;
+}
+
+.modal-btn:active::before {
+    opacity: 0.16;
+}
+
+.modal-btn-primary {
+    background-color: var(--md-sys-color-primary);
+    color: var(--md-sys-color-on-primary);
+}
+
+.modal-btn-secondary {
+    background-color: transparent;
+    color: var(--md-sys-color-primary);
+    border: 1px solid var(--md-sys-color-outline);
+}
+
+.modal-btn span {
+    position: relative;
+    z-index: 1;
+}
+
+/* 響應式設計 */
+@media (max-width: 600px) {
+    .modal-container {
+        width: 95%;
+        margin: 16px;
+    }
+    
+    .modal-content {
+        padding: 16px;
+    }
+    
+    .modal-actions {
+        flex-direction: column;
+    }
+    
+    .modal-btn {
+        width: 100%;
+        margin-bottom: 8px;
+    }
+    
+    .modal-btn:last-child {
+        margin-bottom: 0;
+    }
+}

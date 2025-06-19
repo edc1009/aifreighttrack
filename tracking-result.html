@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shipment Tracking Result</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #0070f3;
+            --secondary-color: #f5f5f5;
+            --border-color: #eaeaea;
+            --text-color: #333;
+            --success-color: #0d9488;
+            --warning-color: #eab308;
+            --error-color: #dc2626;
+        }
+
+        body {
+            background-color: var(--secondary-color);
+            color: var(--text-color);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        /* Header Styles */
+        .top-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            margin-top: 1rem;
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+        
+        .logo {
+            height: 80px;
+            width: auto;
+            margin-right: 1rem;
+            transition: transform 0.2s;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+        }
+
+        /* Search Bar Styles */
+        .search-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .back-button {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            cursor: pointer;
+            padding: 0.5rem;
+            display: flex;
+            align-items: center;
+            transition: transform 0.2s;
+        }
+
+        .back-button:hover {
+            transform: translateX(-3px);
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .search-button {
+            padding: 0.75rem 1.5rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .search-button:hover {
+            background-color: #0051b3;
+        }
+
+        .card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+            border: none;
+        }
+
+        .card-header {
+            background: white;
+            border-bottom: 1px solid var(--border-color);
+            padding: 1.5rem;
+            border-radius: 10px 10px 0 0 !important;
+        }
+
+        .card-header h2 {
+            margin: 0;
+            font-size: 1.25rem;
+            color: var(--primary-color);
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .info-item {
+            margin-bottom: 1rem;
+        }
+
+        .info-label {
+            font-size: 0.875rem;
+            color: #666;
+            margin-bottom: 0.25rem;
+        }
+
+        .info-value {
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        .timeline {
+            position: relative;
+            padding: 1rem 0;
+        }
+
+        .timeline-item {
+            padding: 1rem 0;
+            position: relative;
+            padding-left: 2rem;
+            border-left: 2px solid var(--border-color);
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -0.5rem;
+            top: 1.5rem;
+            width: 1rem;
+            height: 1rem;
+            background: white;
+            border: 2px solid var(--primary-color);
+            border-radius: 50%;
+        }
+
+        .timeline-item.completed::before {
+            background: var(--primary-color);
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .status-badge.in-transit {
+            background-color: var(--warning-color);
+            color: white;
+        }
+
+        .status-badge.arrived {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .status-badge.delivered {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .container-accordion .accordion-button {
+            padding: 1rem;
+            background: white;
+        }
+
+        .container-accordion .accordion-button:not(.collapsed) {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Tabs Styles */
+        .tabs-container {
+            margin-right: 20px;
+        }
+        
+        .tabs {
+            display: flex;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .tab {
+            padding: 0.75rem 1.5rem;
+            font-weight: 500;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .tab.active {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--primary-color);
+        }
+
+        /* 在卡片內的 logo 樣式 */
+        .card .logo-container {
+            width: 120px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .card .logo-container img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+        
+        /* 通知樣式 */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            transition: opacity 0.5s;
+        }
+        
+        .notification.info {
+            background-color: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+        
+        .notification.success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        
+        .notification.warning {
+            background-color: #fff3cd;
+            border: 1px solid #ffeeba;
+            color: #856404;
+        }
+        
+        .notification.error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        
+        .notification.fade-out {
+            opacity: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="top-header">
+            <div class="logo-container" onclick="window.location.href='index.html'">
+                <img src="images/logo.png" alt="Company Logo" class="logo">
+            </div>
+            
+            <!-- Tab 導航欄 -->
+            <div class="tabs-container">
+                <div class="tabs">
+                    <div class="tab active" data-tab="tracking">Tracking</div>
+                    <div class="tab" data-tab="logistics-chat">Logistics Chat</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="search-container">
+            <button class="back-button" onclick="window.location.href='index.html'">
+                <i class="bi bi-arrow-left"></i>
+            </button>
+            <input type="text" class="search-input" id="searchInput" placeholder="Enter container or BL number">
+            <button class="search-button" onclick="performSearch()">Search</button>
+        </div>
+
+        <!-- 區塊一：基本提單信息 -->
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h2>Bill of Lading Summary</h2>
+                <div class="logo-container">
+                    <img src="images/eglv.png" alt="Evergreen Logo">
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">BL Number</div>
+                        <div class="info-value" id="blNumber">-</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Booking Number</div>
+                        <div class="info-value" id="bookingNumber">-</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Carrier</div>
+                        <div class="info-value">Evergreen Marine Corp.</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Commodity</div>
+                        <div class="info-value" id="commodity">-</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 區塊二：航程與港口資訊 -->
+        <div class="card">
+            <div class="card-header">
+                <h2>Routing & Schedule</h2>
+            </div>
+            <div class="card-body">
+                <div class="timeline" id="routingTimeline">
+                    <!-- Timeline items will be inserted here by JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <!-- 區塊三：船舶與航次資訊 -->
+        <div class="card">
+            <div class="card-header">
+                <h2>Vessel & Voyage Information</h2>
+            </div>
+            <div class="card-body">
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">Vessel Name</div>
+                        <div class="info-value" id="vesselName">-</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Voyage Number</div>
+                        <div class="info-value" id="voyageNumber">-</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Transshipment</div>
+                        <div class="info-value" id="transshipment">No</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Status</div>
+                        <div class="info-value">
+                            <span class="status-badge in-transit" id="shipmentStatus">
+                                <i class="bi bi-truck"></i>
+                                In Transit
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 區塊四：貨櫃動態 -->
+        <div class="card">
+            <div class="card-header">
+                <h2>Container Tracking</h2>
+            </div>
+            <div class="card-body">
+                <div class="accordion container-accordion" id="containerAccordion">
+                    <!-- Container items will be inserted here by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // 用於處理追蹤數據的函數
+        function handleTrackingData(data) {
+            // 更新基本信息
+            document.getElementById('blNumber').textContent = data.blNumber || '-';
+            document.getElementById('bookingNumber').textContent = data.bookingNumber || '-';
+            document.getElementById('commodity').textContent = data.commodity || '-';
+
+            // 更新船舶信息
+            document.getElementById('vesselName').textContent = data.vesselName || '-';
+            document.getElementById('voyageNumber').textContent = data.voyageNumber || '-';
+            document.getElementById('transshipment').textContent = data.hasTransshipment ? 'Yes' : 'No';
+
+            // 更新狀態
+            updateShipmentStatus(data.status);
+
+            // 更新路線時間軸
+            updateRoutingTimeline(data.routing);
+
+            // 更新集裝箱信息
+            updateContainers(data.containers);
+        }
+
+        // 更新shipment狀態
+        function updateShipmentStatus(status) {
+            const statusBadge = document.getElementById('shipmentStatus');
+            statusBadge.className = `status-badge ${status.toLowerCase()}`;
+            statusBadge.innerHTML = `
+                <i class="bi bi-${getStatusIcon(status)}"></i>
+                ${status}
+            `;
+        }
+
+        // 獲取狀態圖標
+        function getStatusIcon(status) {
+            switch(status.toLowerCase()) {
+                case 'in transit': return 'truck';
+                case 'arrived': return 'geo-alt-fill';
+                case 'delivered': return 'check-circle-fill';
+                default: return 'info-circle';
+            }
+        }
+
+        // 更新路線時間軸
+        function updateRoutingTimeline(routing) {
+            const timeline = document.getElementById('routingTimeline');
+            timeline.innerHTML = '';
+
+            if (routing && routing.length > 0) {
+                routing.forEach(point => {
+                    const item = document.createElement('div');
+                    item.className = `timeline-item ${point.completed ? 'completed' : ''}`;
+                    item.innerHTML = `
+                        <div class="fw-bold">${point.location}</div>
+                        <div class="text-muted">
+                            <small>
+                                ${point.type === 'POL' ? 'Port of Loading' : 
+                                  point.type === 'POD' ? 'Port of Discharge' : 'Transshipment Port'}
+                            </small>
+                        </div>
+                        <div>
+                            <small>ETD: ${point.etd || '-'}</small><br>
+                            <small>ETA: ${point.eta || '-'}</small>
+                        </div>
+                    `;
+                    timeline.appendChild(item);
+                });
+            } else {
+                timeline.innerHTML = '<div class="p-3">No routing information available</div>';
+            }
+        }
+
+        // 更新集裝箱信息
+        function updateContainers(containers) {
+            const accordion = document.getElementById('containerAccordion');
+            accordion.innerHTML = '';
+
+            if (containers && containers.length > 0) {
+                containers.forEach((container, index) => {
+                    const item = document.createElement('div');
+                    item.className = 'accordion-item';
+                    item.innerHTML = `
+                        <h2 class="accordion-header">
+                            <button class="accordion-button ${index === 0 ? '' : 'collapsed'}" 
+                                    type="button" 
+                                    data-bs-toggle="collapse" 
+                                    data-bs-target="#container${index}">
+                                ${container.number} - ${container.type}
+                            </button>
+                        </h2>
+                        <div id="container${index}" 
+                             class="accordion-collapse collapse ${index === 0 ? 'show' : ''}"
+                             data-bs-parent="#containerAccordion">
+                            <div class="accordion-body">
+                                <div class="info-grid">
+                                    <div class="info-item">
+                                        <div class="info-label">Container Type</div>
+                                        <div class="info-value">${container.type}</div>
+                                    </div>
+                                    <div class="info-item">
+                                        <div class="info-label">Load Status</div>
+                                        <div class="info-value">${container.loadStatus}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    accordion.appendChild(item);
+                });
+            } else {
+                accordion.innerHTML = '<div class="p-3">No container information available</div>';
+            }
+        }
+
+        // 示例數據 - 實際使用時應該從API獲取
+        const sampleData = {
+            blNumber: 'EGLV1234567890',
+            bookingNumber: 'BK123456789',
+            commodity: 'General Cargo',
+            vesselName: 'EVER GOLDEN',
+            voyageNumber: 'V123E',
+            hasTransshipment: true,
+            status: 'In Transit',
+            routing: [
+                {
+                    location: 'TWKHH',
+                    type: 'POL',
+                    etd: '2024-01-15',
+                    eta: null,
+                    completed: true
+                },
+                {
+                    location: 'HKHKG',
+                    type: 'TSP',
+                    etd: '2024-01-20',
+                    eta: '2024-01-18',
+                    completed: false
+                },
+                {
+                    location: 'USNYC',
+                    type: 'POD',
+                    etd: null,
+                    eta: '2024-02-01',
+                    completed: false
+                }
+            ],
+            containers: [
+                {
+                    number: 'EGLV1234567',
+                    type: '40HC',
+                    loadStatus: 'Full'
+                },
+                {
+                    number: 'EGLV7654321',
+                    type: '20GP',
+                    loadStatus: 'Empty'
+                }
+            ]
+        };
+
+        // 頁面加載時處理數據
+        document.addEventListener('DOMContentLoaded', () => {
+            // 從 URL 參數獲取 BL 號碼
+            const urlParams = new URLSearchParams(window.location.search);
+            const trackingNumber = urlParams.get('number');
+            const trackingType = urlParams.get('type') || 'bl'; // 默認為 bl 類型
+            
+            if (trackingNumber) {
+                // 設置搜索輸入框的值
+                document.getElementById('searchInput').value = trackingNumber;
+                
+                // 根據追蹤號碼格式判斷是否為長榮的提單
+                const isEvergreen = isEvergreenNumber(trackingNumber);
+                
+                if (isEvergreen) {
+                    // 調用 EMC API 獲取追蹤數據
+                    fetchEvergreenData(trackingNumber, trackingType);
+                } else {
+                    // 如果不是長榮的提單，顯示樣本數據或錯誤信息
+                    handleTrackingData(sampleData);
+                    showNotification('非長榮提單號碼，顯示樣本數據', 'warning');
+                }
+            } else {
+                // 如果沒有提供追蹤號碼，顯示樣本數據
+                handleTrackingData(sampleData);
+            }
+        });
+        
+        // 判斷是否為長榮的提單號碼
+        function isEvergreenNumber(number) {
+            const scacPrefixes = ['EGLV', 'EISU', 'EGHU', 'EMCU', 'IMTU', 'LITU', 'EGSU', 'UGMU'];
+            const upperNumber = number.toUpperCase();
+            
+            for (const prefix of scacPrefixes) {
+                if (upperNumber.startsWith(prefix)) {
+                    return true;
+                }
+            }
+            
+            return false;
+        }
+        
+        // 從 EMC API 獲取長榮追蹤數據
+        async function fetchEvergreenData(number, type) {
+            try {
+                // 顯示加載中狀態
+                showNotification('正在獲取追蹤數據...', 'info');
+                
+                // 導入 EMC 服務
+                const emcServiceModule = await import('./services/emcService.js');
+                const emcService = emcServiceModule.default;
+                
+                let trackingData;
+                let attemptedNumber = number;
+                
+                try {
+                    // 第一次嘗試：使用原始號碼
+                    if (type === 'container') {
+                        trackingData = await emcService.trackContainer(attemptedNumber);
+                    } else {
+                        trackingData = await emcService.trackBL(attemptedNumber);
+                    }
+                } catch (firstError) {
+                    console.log('第一次請求失敗，嘗試去掉 SCAC code:', firstError);
+                    
+                    // 第二次嘗試：去掉 SCAC code
+                    const scacPrefixes = ['EGLV', 'EISU', 'EGHU', 'EMCU', 'IMTU', 'LITU', 'EGSU', 'UGMU'];
+                    let cleanNumber = number;
+                    for (const prefix of scacPrefixes) {
+                        if (cleanNumber.toUpperCase().startsWith(prefix)) {
+                            cleanNumber = cleanNumber.substring(prefix.length);
+                            break;
+                        }
+                    }
+                    
+                    // 如果去掉 SCAC code 後號碼有變化，再次嘗試
+                    if (cleanNumber !== number) {
+                        attemptedNumber = cleanNumber;
+                        showNotification('嘗試去掉 SCAC code 重新查詢...', 'info');
+                        
+                        if (type === 'container') {
+                            trackingData = await emcService.trackContainer(cleanNumber);
+                        } else {
+                            trackingData = await emcService.trackBL(cleanNumber);
+                        }
+                    } else {
+                        // 如果號碼沒有變化，重新拋出原始錯誤
+                        throw firstError;
+                    }
+                }
+                
+                // 將 API 返回的數據轉換為頁面所需的格式
+                const formattedData = formatEvergreenData(trackingData, attemptedNumber, type);
+                
+                // 更新頁面顯示
+                handleTrackingData(formattedData);
+                
+                // 根據是否有數據顯示不同的通知
+                if (formattedData.noData) {
+                    const message = attemptedNumber !== number ? 
+                        `未找到該號碼的追蹤數據（已嘗試原始號碼 ${number} 和去掉 SCAC code 的號碼 ${attemptedNumber}），可能是號碼不存在或尚未在系統中更新` :
+                        '未找到該號碼的追蹤數據，可能是號碼不存在或尚未在系統中更新';
+                    showNotification(message, 'warning');
+                } else {
+                    const message = attemptedNumber !== number ? 
+                        `追蹤數據獲取成功（使用號碼：${attemptedNumber}）` :
+                        '追蹤數據獲取成功';
+                    showNotification(message, 'success');
+                }
+                
+            } catch (error) {
+                console.error('獲取追蹤數據失敗:', error);
+                showNotification(`API連接失敗: ${error.message}`, 'error');
+                
+                // 創建一個顯示錯誤信息的數據對象
+                const errorData = {
+                    blNumber: number,
+                    bookingNumber: '-',
+                    commodity: '-',
+                    vesselName: '-',
+                    voyageNumber: '-',
+                    hasTransshipment: false,
+                    status: 'Error',
+                    routing: [],
+                    containers: [],
+                    timeline: []
+                };
+                handleTrackingData(errorData);
+            }
+        }
+        
+        // 將 API 返回的數據轉換為頁面所需的格式
+        function formatEvergreenData(apiData, number, type) {
+            // 檢查API數據是否為空或無效
+            if (!apiData || Object.keys(apiData).length === 0 || !apiData.events || apiData.events.length === 0) {
+                // 返回基本信息，顯示無追蹤數據
+                return {
+                    blNumber: number,
+                    bookingNumber: '-',
+                    commodity: '-',
+                    vesselName: '-',
+                    voyageNumber: '-',
+                    hasTransshipment: false,
+                    status: 'No Data',
+                    routing: [],
+                    containers: [],
+                    timeline: [],
+                    noData: true
+                };
+            }
+            
+            // 解析API返回的事件數據
+            const events = apiData.events || [];
+            const timeline = events.map(event => ({
+                date: event.eventDateTime,
+                location: event.eventLocation?.locationName || 'Unknown',
+                status: event.eventType,
+                description: event.eventTypeCode,
+                completed: true
+            }));
+            
+            // 提取船舶和航次信息
+            const vesselInfo = events.find(e => e.transportCall?.vessel);
+            
+            return {
+                blNumber: number,
+                bookingNumber: apiData.bookingReference || '-',
+                commodity: apiData.commodityType || '-',
+                vesselName: vesselInfo?.transportCall?.vessel?.vesselName || '-',
+                voyageNumber: vesselInfo?.transportCall?.voyage || '-',
+                hasTransshipment: false,
+                status: 'In Transit',
+                routing: [],
+                timeline: timeline,
+                containers: apiData.equipmentReferences || []
+            };
+        }
+        
+        // 顯示通知信息
+        function showNotification(message, type = 'info') {
+            // 創建通知元素
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            
+            // 添加到頁面
+            document.body.appendChild(notification);
+            
+            // 3秒後自動移除
+            setTimeout(() => {
+                notification.classList.add('fade-out');
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 500);
+            }, 3000);
+        }
+
+        // 搜索功能
+        function performSearch() {
+            const searchValue = document.getElementById('searchInput').value.trim();
+            if (!searchValue) {
+                alert('Please enter a tracking number');
+                return;
+            }
+            
+            // 重定向到帶有新搜索參數的當前頁面
+            window.location.href = `tracking-result.html?number=${encodeURIComponent(searchValue)}`;
+        }
+
+        // 為搜索輸入框添加回車鍵事件監聽
+        document.getElementById('searchInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                performSearch();
+            }
+        });
+
+        // Tab 切換功能
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                // 如果點擊的是 Logistics Chat，跳轉到 index.html 的對應 tab
+                if (tab.getAttribute('data-tab') === 'logistics-chat') {
+                    window.location.href = 'index.html#logistics-chat';
+                    return;
+                }
+                
+                // 移除所有 tab 的 active 類
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                // 添加當前 tab 的 active 類
+                tab.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>

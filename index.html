@@ -4,417 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Container/BL Redirect Tracker</title>
-    <style>
-        :root {
-            --primary-color: #0070f3;
-            --secondary-color: #f5f5f5;
-            --border-color: #eaeaea;
-            --text-color: #333;
-            --error-color: #e53e3e;
-            --info-color: #3182ce;
-        }
-        
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-        
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-            line-height: 1.6;
-            color: var(--text-color);
-            background-color: var(--secondary-color);
-        }
-        
-        .container {
-            width: 100%;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 1rem;
-        }
-        
-        header {
-            text-align: center;
-            margin: 2rem 0;
-        }
-        
-        h1 {
-            font-size: 2rem;
-            margin-bottom: 0.5rem;
-        }
-        
-        .description {
-            font-size: 1rem;
-            color: #666;
-            max-width: 600px;
-            margin: 0 auto 1.5rem;
-        }
-        
-        .search-form {
-            max-width: 600px;
-            margin: 2rem auto;
-            padding: 2rem;
-            background-color: white;
-            border-radius: 0.5rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        
-        .radio-group {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 1rem;
-        }
-        
-        .radio-label {
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-        }
-        
-        .radio-label input {
-            margin-right: 0.5rem;
-        }
-        
-        .input-group {
-            margin-bottom: 1rem;
-        }
-        
-        input[type="text"] {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid var(--border-color);
-            border-radius: 0.25rem;
-            font-size: 1rem;
-        }
-        
-        .error-message {
-            color: var(--error-color);
-            font-size: 0.875rem;
-            margin-top: 0.5rem;
-            min-height: 1.5rem;
-        }
-        
-        button {
-            width: 100%;
-            padding: 0.75rem;
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: 0.25rem;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-        
-        button:hover {
-            background-color: #0051b3;
-        }
-        
-        .companies {
-            margin: 2rem 0;
-        }
-        
-        .companies-title {
-            text-align: center;
-            margin-bottom: 1.5rem;
-            font-size: 1.5rem;
-        }
-        
-        .companies-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 1rem;
-        }
-        
-        .company-card {
-            background-color: white;
-            border: 1px solid var(--border-color);
-            border-radius: 0.5rem;
-            padding: 1rem;
-            text-align: center;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-        
-        .company-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-        
-        .company-logo {
-            height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 0.5rem;
-        }
-        
-        .company-placeholder {
-            width: 60px;
-            height: 60px;
-            background-color: #e2e8f0;
-            border-radius: 0.25rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            color: #4a5568;
-            margin: 0 auto;
-        }
-        
-        .company-name {
-            font-weight: bold;
-            margin-bottom: 0.25rem;
-        }
-        
-        .company-code {
-            font-size: 0.875rem;
-            color: #666;
-        }
-        
-        footer {
-            text-align: center;
-            padding: 2rem 0;
-            margin-top: 2rem;
-            border-top: 1px solid var(--border-color);
-            font-size: 0.875rem;
-            color: #666;
-        }
-        
-        .footer-author {
-            margin-top: 0.5rem;
-            font-size: 0.875rem;
-            color: #666;
-        }
-
-        .footer-author a {
-            color: var(--primary-color);
-            text-decoration: none;
-            transition: color 0.2s;
-        }
-
-        .footer-author a:hover {
-            color: #0051b3;
-            text-decoration: underline;
-        }
-        
-        @media (max-width: 768px) {
-            .companies-grid {
-                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            }
-        }
-        
-        .info-message {
-            color: var(--info-color);
-            font-size: 0.875rem;
-            margin-top: 0.25rem;
-            margin-bottom: 0.5rem;
-            font-style: italic;
-        }
-        
-        .scac-code-example {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            margin-top: 0.5rem;
-            font-size: 0.75rem;
-        }
-        
-        .scac-tag {
-            background-color: #e2e8f0;
-            padding: 0.125rem 0.375rem;
-            border-radius: 0.25rem;
-            white-space: nowrap;
-        }
-        
-        /* Tab 樣式 */
-        .tabs {
-            display: flex;
-            margin-bottom: 1rem;
-            border-bottom: 1px solid var(--border-color);
-        }
-        
-        .tab {
-            padding: 0.75rem 1.5rem;
-            font-weight: 500;
-            cursor: pointer;
-            border-bottom: 2px solid transparent;
-            transition: all 0.3s ease;
-        }
-        
-        .tab.active {
-            color: var(--primary-color);
-            border-bottom: 2px solid var(--primary-color);
-        }
-        
-        .tab-content {
-            display: none;
-        }
-        
-        .tab-content.active {
-            display: block;
-        }
-        
-        /* 聊天界面樣式 */
-        .chat-container {
-            max-width: 800px;
-            margin: 2rem auto;
-            background-color: white;
-            border-radius: 0.5rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            height: 600px;
-        }
-        
-        .chat-header {
-            background-color: var(--primary-color);
-            color: white;
-            padding: 1rem;
-            text-align: center;
-        }
-        
-        .chat-messages {
-            flex: 1;
-            padding: 1rem;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-        
-        .message {
-            max-width: 80%;
-            padding: 0.75rem 1rem;
-            border-radius: 1rem;
-            position: relative;
-            line-height: 1.5;
-        }
-        
-        .user-message {
-            align-self: flex-end;
-            background-color: var(--primary-color);
-            color: white;
-            border-bottom-right-radius: 0.25rem;
-        }
-        
-        .ai-message {
-            align-self: flex-start;
-            background-color: #f1f1f1;
-            border-bottom-left-radius: 0.25rem;
-        }
-        
-        .ai-message pre {
-            background-color: #f8f8f8;
-            padding: 0.5rem;
-            border-radius: 0.25rem;
-            overflow-x: auto;
-            margin: 0.5rem 0;
-        }
-        
-        .chat-input-container {
-            padding: 1rem;
-            border-top: 1px solid var(--border-color);
-            display: flex;
-            gap: 0.5rem;
-        }
-        
-        .chat-input {
-            flex: 1;
-            padding: 0.75rem;
-            border: 1px solid var(--border-color);
-            border-radius: 0.25rem;
-            font-size: 1rem;
-            resize: none;
-        }
-        
-        .chat-send-btn {
-            width: auto;
-            padding: 0.75rem 1.5rem;
-        }
-        
-        .typing-indicator {
-            display: flex;
-            align-items: center;
-            gap: 0.25rem;
-            padding: 0.5rem 1rem;
-            background-color: #f1f1f1;
-            border-radius: 1rem;
-            border-bottom-left-radius: 0.25rem;
-            align-self: flex-start;
-            font-style: italic;
-            color: #666;
-        }
-        
-        .dot {
-            width: 8px;
-            height: 8px;
-            background-color: #666;
-            border-radius: 50%;
-            animation: typing 1.5s infinite;
-        }
-        
-        .dot:nth-child(2) {
-            animation-delay: 0.2s;
-        }
-        
-        .dot:nth-child(3) {
-            animation-delay: 0.4s;
-        }
-        
-        @keyframes typing {
-            0% { opacity: 0.2; transform: translateY(0); }
-            50% { opacity: 1; transform: translateY(-5px); }
-            100% { opacity: 0.2; transform: translateY(0); }
-        }
-        
-        .limit-warning {
-            margin-top: 0.5rem;
-            color: #888;
-            font-size: 0.75rem;
-            text-align: center;
-        }
-
-        /* 頁面頂部布局 */
-        .top-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 0;
-            margin-bottom: 1rem;
-        }
-        
-        .logo-container {
-            display: flex;
-            align-items: center;
-            cursor: pointer; /* 添加指針樣式 */
-        }
-        
-        .logo {
-            height: 80px; /* 增加logo大小 */
-            margin-right: 1rem;
-            transition: transform 0.2s; /* 添加過渡效果 */
-        }
-
-        .logo:hover {
-            transform: scale(1.05); /* 添加懸停效果 */
-        }
-        
-        /* 確保tabs在右側有空間 */
-        .tabs-container {
-            margin-right: 20px;
-        }
-        
-        /* Tracking分頁標題樣式 */
-        .tracking-title {
-            text-align: center;
-            font-size: 2rem;
-            margin: 1rem auto 1.5rem;
-            max-width: 600px;
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Z6Z7TSWYX5"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-Z6Z7TSWYX5');
+</script>
 <body>
     <div class="container">
         <!-- 頂部布局：左側logo，右側tabs -->
@@ -428,6 +28,7 @@
                 <div class="tabs">
                     <div class="tab active" data-tab="tracking">Tracking</div>
                     <div class="tab" data-tab="logistics-chat">Logistics Chat</div>
+                    <div class="tab" onclick="window.location.href='about.html'">About Us</div>
                 </div>
             </div>
         </div>
@@ -455,7 +56,7 @@
                     <div class="input-group">
                         <div class="select-group" style="margin-bottom: 1rem;">
                             <label for="companySelect">Select Shipping Company:</label>
-                            <select id="companySelect" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 0.25rem; font-size: 1rem;">
+                            <select id="companySelect">
                                 <option value="">-- Select a company --</option>
                                 <!-- Options will be populated by JavaScript -->
                             </select>
@@ -511,11 +112,34 @@
                     <div class="limit-warning" id="limit-warning"></div>
                 </div>
             </div>
+            
+            <!-- Development Notice Modal -->
+            <div class="modal-overlay" id="dev-notice-modal">
+                <div class="modal-container">
+                    <div class="modal-content">
+                        <div class="modal-icon">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM21 9V7L15 1H5C3.89 1 3 1.89 3 3V21C3 22.11 3.89 23 5 23H11V21H5V3H13V9H21ZM14 10V12H16V10H14ZM14 14V16H16V14H14ZM10 10V12H12V10H10ZM10 14V16H12V14H10ZM6 10V12H8V10H6ZM6 14V16H8V14H6ZM19.5 18.5L18.1 17.1L15.5 19.7L14.1 18.3L12.7 19.7L15.5 22.5L19.5 18.5Z" fill="currentColor"/>
+                            </svg>
+                        </div>
+                        <h3 class="modal-title">Feature Under Development</h3>
+                        <p class="modal-description">
+                            The Logistics Chat feature is currently under development. We're working hard to bring you an enhanced AI-powered logistics assistant with advanced capabilities.
+                        </p>
+                        <p class="modal-description">
+                            In the meantime, you can use our container tracking service to monitor your shipments.
+                        </p>
+                        <div class="modal-actions">
+                            <button class="modal-btn modal-btn-primary" id="modal-tracking-btn">Go to Tracking</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </main>
         
         <footer>
             <p>&copy; <span id="currentYear"></span> Container/BL Redirect Tracker. All rights reserved.</p>
-            <p class="footer-author">Created by <a href="https://www.linkedin.com/in/chen-i/" target="_blank" rel="noopener">Edward Chen</a></p>
+            <p>Created by <a href="https://www.linkedin.com/in/chen-i/" target="_blank" style="color: var(--primary-color); text-decoration: none;">Edward Chen</a></p>
         </footer>
     </div>
     
@@ -1291,8 +915,8 @@
             return field;
         }
 
-        // 處理Evergreen的重定向 - 改為彈窗顯示查詢連結與可複製號碼
-        function handleEvergreenRedirect(baseUrl, number, type) {
+        // 針對Evergreen的特殊處理
+        async function handleEvergreenRedirect(baseUrl, number, type) {
             const scacPrefixes = ['EGLV', 'EISU', 'EGHU', 'EMCU', 'IMTU', 'LITU', 'EGSU', 'UGMU'];
             let cleanNumber = number;
             for (const prefix of scacPrefixes) {
@@ -1301,64 +925,9 @@
                     break;
                 }
             }
-            const popupDiv = document.createElement('div');
-            popupDiv.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.4); z-index:9999; display:flex; justify-content:center; align-items:center;';
-            function closePopup() {
-                if (popupDiv.parentNode) {
-                    document.body.removeChild(popupDiv);
-                }
-            }
-            const contentDiv = document.createElement('div');
-            contentDiv.style.cssText = 'background:white; padding:25px; border-radius:10px; max-width:500px; width:90%; position:relative;';
-            contentDiv.addEventListener('click', function(event) { event.stopPropagation(); });
-            const closeButton = document.createElement('button');
-            closeButton.innerHTML = '✕';
-            closeButton.style.cssText = 'position:absolute; top:10px; right:10px; border:none; background:none; font-size:24px; font-weight:bold; cursor:pointer; color:black; padding:0; width:30px; height:30px; line-height:26px; text-align:center;';
-            closeButton.addEventListener('click', function(event) { event.stopPropagation(); closePopup(); });
-            popupDiv.addEventListener('click', function(event) { if (event.target === popupDiv) { closePopup(); } });
-            const title = document.createElement('h2');
-            title.textContent = 'Evergreen Tracking';
-            title.style.cssText = 'margin-top:0; color:#0070A8;';
-            const description = document.createElement('p');
-            description.innerHTML = 'Please click the link below to visit Evergreen tracking page and paste your tracking number manually:';
-            const linkBox = document.createElement('div');
-            linkBox.style.cssText = 'background:#f4f4f4; padding:10px; border-radius:5px; margin:15px 0;';
-            const linkText = document.createElement('a');
-            linkText.href = 'https://ct.shipmentlink.com/servlet/TDB1_CargoTracking.do';
-            linkText.textContent = 'https://ct.shipmentlink.com/servlet/TDB1_CargoTracking.do';
-            linkText.target = '_blank';
-            linkText.style.cssText = 'word-break:break-all;';
-            linkBox.appendChild(linkText);
-            const numberLabel = document.createElement('p');
-            numberLabel.textContent = 'Your Tracking Number:';
-            numberLabel.style.cssText = 'margin-bottom:5px;';
-            const numberBox = document.createElement('div');
-            numberBox.style.cssText = 'background:#f4f4f4; padding:10px; border-radius:10px; position:relative; margin-bottom:15px;';
-            const numberText = document.createElement('div');
-            numberText.textContent = cleanNumber;
-            numberText.style.cssText = 'margin-bottom:10px;';
-            const copyButton = document.createElement('button');
-            copyButton.textContent = 'Copy';
-            copyButton.style.cssText = 'border:none; background:#0070A8; color:white; padding:8px 0; border-radius:10px; cursor:pointer; width:100%;';
-            copyButton.addEventListener('click', function(event) {
-                event.stopPropagation();
-                navigator.clipboard.writeText(cleanNumber).then(function() {
-                    copyButton.textContent = 'Copied';
-                    setTimeout(function() {
-                        copyButton.textContent = 'Copy';
-                    }, 2000);
-                });
-            });
-            numberBox.appendChild(numberText);
-            numberBox.appendChild(copyButton);
-            contentDiv.appendChild(closeButton);
-            contentDiv.appendChild(title);
-            contentDiv.appendChild(description);
-            contentDiv.appendChild(linkBox);
-            contentDiv.appendChild(numberLabel);
-            contentDiv.appendChild(numberBox);
-            popupDiv.appendChild(contentDiv);
-            document.body.appendChild(popupDiv);
+
+            // 跳轉到新的追蹤頁面
+            window.location.href = `tracking-result.html?number=${encodeURIComponent(number)}&type=${type}`;
             return null;
         }
 
@@ -1660,6 +1229,11 @@
                 // 顯示對應的內容
                 const tabId = tab.getAttribute('data-tab');
                 document.getElementById(`${tabId}-content`).classList.add('active');
+                
+                // 如果切換到 logistics-chat，顯示開發中彈窗
+                if (tabId === 'logistics-chat') {
+                    showDevNoticeModal();
+                }
             });
         });
 
@@ -1669,11 +1243,11 @@
         const chatMessages = document.getElementById('chat-messages');
         const limitWarning = document.getElementById('limit-warning');
         
-        // OpenAI API Key - 請替換為您的實際key
-        const OPENAI_API_KEY = 'YOUR_API_KEY_HERE';
+        // LangGraph Agent API 配置
+        const AGENT_API_URL = 'http://localhost:8000';
         
-        // 每日聊天限制
-        const MAX_DAILY_CHATS = 10;
+        // 每日聊天限制（保持現有限制）
+        const MAX_DAILY_CHATS = 20; // 增加到20次，因為新系統更強大
         const STORAGE_KEY = 'logistics_chat_usage';
         
         // 檢查並初始化使用情況
@@ -1782,47 +1356,83 @@
             }
         }
         
-        // 發送消息到 OpenAI API
-        async function sendToOpenAI(userMessage) {
+        // 發送消息到 LangGraph Agent API
+        async function sendToAgent(userMessage) {
             const typingIndicator = showTypingIndicator();
             
             try {
-                const response = await fetch('https://api.openai.com/v1/chat/completions', {
+                const response = await fetch(`${AGENT_API_URL}/chat`, {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${OPENAI_API_KEY}`
+                        'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        model: 'gpt-4',
-                        messages: [
-                            {
-                                role: 'system',
-                                content: 'You are a helpful logistics assistant. Provide concise and accurate information about shipping, containers, ports, customs, and international trade. Include examples and practical tips when relevant.'
-                            },
-                            {
-                                role: 'user',
-                                content: userMessage
-                            }
-                        ],
-                        max_tokens: 1000
+                        message: userMessage,
+                        max_iterations: 3
                     })
                 });
                 
                 if (!response.ok) {
-                    throw new Error(`API request failed with status ${response.status}`);
+                    // 如果主要API失敗，嘗試簡化版本
+                    console.warn('Main agent API failed, trying simple chat...');
+                    return await sendToSimpleAgent(userMessage);
                 }
                 
                 const data = await response.json();
-                const aiResponse = data.choices[0].message.content;
                 
                 hideTypingIndicator();
-                addMessage(aiResponse);
+                
+                if (data.success) {
+                    // 顯示主要答案
+                    addMessage(data.answer);
+                    
+                    // 如果有搜索來源，顯示來源信息
+                    if (data.sources && data.sources.length > 0) {
+                        const sourcesText = `\n\n📚 搜索來源：\n${data.sources.map((source, index) => `${index + 1}. ${source}`).join('\n')}`;
+                        addMessage(sourcesText);
+                    }
+                } else {
+                    addMessage(data.answer || '抱歉，處理您的請求時發生錯誤。');
+                }
                 
             } catch (error) {
-                console.error('Error calling OpenAI API:', error);
+                console.error('Error calling Agent API:', error);
+                // 嘗試簡化版本
+                await sendToSimpleAgent(userMessage);
+            }
+        }
+        
+        // 簡化版 Agent API（備用）
+        async function sendToSimpleAgent(userMessage) {
+            try {
+                const response = await fetch(`${AGENT_API_URL}/simple-chat`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message: userMessage
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`Simple API request failed with status ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
                 hideTypingIndicator();
-                addMessage('Sorry, I encountered an error while processing your request. Please try again later.');
+                
+                if (data.success) {
+                    addMessage(data.answer);
+                } else {
+                    addMessage('抱歉，目前無法處理您的請求。請檢查網絡連接或稍後再試。');
+                }
+                
+            } catch (error) {
+                console.error('Error calling Simple Agent API:', error);
+                hideTypingIndicator();
+                addMessage('抱歉，AI助手暫時無法使用。請稍後再試或聯繫技術支持。');
             }
         }
         
@@ -1837,9 +1447,9 @@
             if (updateChatUsage()) {
                 addMessage(message, true);
                 chatInput.value = '';
-                sendToOpenAI(message);
+                sendToAgent(message);
             } else {
-                addMessage('Sorry, you have reached your daily limit of questions. Please try again tomorrow.', false);
+                addMessage('抱歉，您已達到每日問題限制。請明天再試。', false);
             }
         });
         
@@ -1869,6 +1479,52 @@
                 trackingContent.classList.add('active');
             }
         }
+        
+        // 開發中彈窗相關函數
+        function showDevNoticeModal() {
+            const modal = document.getElementById('dev-notice-modal');
+            if (modal) {
+                modal.style.display = 'flex';
+                // 添加淡入動畫
+                setTimeout(() => {
+                    modal.classList.add('modal-show');
+                }, 10);
+            }
+        }
+        
+        function hideDevNoticeModal() {
+            const modal = document.getElementById('dev-notice-modal');
+            if (modal) {
+                modal.classList.remove('modal-show');
+                // 等待動畫完成後隱藏
+                setTimeout(() => {
+                    modal.style.display = 'none';
+                }, 300);
+            }
+        }
+        
+        // 彈窗按鈕事件
+         document.addEventListener('DOMContentLoaded', () => {
+             const modalTrackingBtn = document.getElementById('modal-tracking-btn');
+             const modalOverlay = document.getElementById('dev-notice-modal');
+             
+             // 前往追蹤頁面按鈕
+             if (modalTrackingBtn) {
+                 modalTrackingBtn.addEventListener('click', () => {
+                     hideDevNoticeModal();
+                     switchToTrackingTab();
+                 });
+             }
+             
+             // 點擊背景關閉彈窗
+             if (modalOverlay) {
+                 modalOverlay.addEventListener('click', (e) => {
+                     if (e.target === modalOverlay) {
+                         hideDevNoticeModal();
+                     }
+                 });
+             }
+         });
     </script>
 </body>
-</html> 
+</html>
